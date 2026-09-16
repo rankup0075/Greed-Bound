@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca90b8b2a80741b4a91ace269d9d821b, type: 3}
+  m_Name: env_death_zone
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  id: env_death_zone
+  category: 3
+  displayName: "\uC8FD\uC74C\uC758 \uC601\uC5ED"
+  description: "32\uCD08\uC5D0 \uAC78\uCCD0 \uC804\uC7A5\uC774 \uC591\uCABD\uC5D0\uC11C
+    \uC881\uC544\uC9D0"
+  risk: 20
+  reward: 50
+  effect: 34

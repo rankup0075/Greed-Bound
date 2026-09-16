@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca90b8b2a80741b4a91ace269d9d821b, type: 3}
+  m_Name: behavior_revenge
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  id: behavior_revenge
+  category: 1
+  displayName: "\uBCF5\uC218"
+  description: "\uC801\uC774 \uC8FD\uC73C\uBA74 \uB0A8\uC740 \uC801\uC758 \uACF5\uACA9\uB825
+    \xD71.25 (4\uCD08)"
+  risk: 11
+  reward: 30
+  effect: 10

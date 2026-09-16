@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca90b8b2a80741b4a91ace269d9d821b, type: 3}
+  m_Name: swarm_split
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  id: swarm_split
+  category: 2
+  displayName: "\uBD84\uC5F4"
+  description: "\uC801\uC774 \uC8FD\uC73C\uBA74 \uC18C\uD615 \uC801 1\uB9C8\uB9AC\uAC00
+    \uB098\uD0C0\uB0A8"
+  risk: 14
+  reward: 35
+  effect: 21
