@@ -8,6 +8,8 @@ public struct HitInfo
     public float knockback;        // 밀어내는 거리 (unit). 0이면 밀어내지 않음
     public bool cancelAttack;      // true면 대상이 준비 중인 공격(예비동작)을 취소시킴 — 3타
     public GameObject source;      // 누가 때렸는지
+    public bool damageOverTime;    // 화염 등 지속 피해 — 무적을 무시하고, 맞아도 무적·화면 흔들림이 생기지 않음
+    public bool guardBreak;        // 방패병의 방패를 뚫고 내리게 함 — 3타·스킬
 }
 
 // 피해를 받을 수 있는 모든 것(적, 허수아비, 플레이어)이 구현하는 규약.

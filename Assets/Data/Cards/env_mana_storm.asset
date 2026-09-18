@@ -15,7 +15,7 @@ MonoBehaviour:
   id: env_mana_storm
   category: 3
   displayName: "\uB9C8\uB825 \uD3ED\uD48D"
-  description: "3.8\uCD08\uB9C8\uB2E4 \uC608\uACE0 \uD6C4 \uB099\uB8B0\uAC00 \uB5A8\uC5B4\uC9D0"
-  risk: 13
-  reward: 35
+  description: "4\uCD08\uB9C8\uB2E4 \uC608\uACE0 \uD6C4 \uB099\uB8B0\uAC00 \uB5A8\uC5B4\uC9D0"
+  risk: 9
+  reward: 45
   effect: 32

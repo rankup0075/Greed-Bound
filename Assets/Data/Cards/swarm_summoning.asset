@@ -15,7 +15,7 @@ MonoBehaviour:
   id: swarm_summoning
   category: 2
   displayName: "\uC18C\uD658\uC220"
-  description: "4.6\uCD08\uB9C8\uB2E4 \uC801 1\uB9C8\uB9AC \uC18C\uD658"
-  risk: 18
+  description: "4.5\uCD08\uB9C8\uB2E4 \uC801 1\uB9C8\uB9AC \uC18C\uD658"
+  risk: 17
   reward: 40
   effect: 23

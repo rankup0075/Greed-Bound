@@ -15,8 +15,7 @@ MonoBehaviour:
   id: env_seal
   category: 3
   displayName: "\uBD09\uC778"
-  description: "\uC774\uBC88 \uB77C\uC6B4\uB4DC\uC5D0\uB9CC \uBB3C\uC57D\xB7\uB2E8\uAC80
-    \uC0AC\uC6A9 \uBD88\uAC00"
+  description: "이번 라운드에만 물약\xB7단검\xB7스킬 사용 불가"
   risk: 16
   reward: 40
   effect: 33

@@ -17,6 +17,9 @@ public class DaggerThrower : MonoBehaviour
     public int CurrentDaggers { get; private set; }
     public int MaxDaggers => baseMaxDaggers + stats.bonusDaggers;
 
+    // 단검을 실제로 던진 순간 — 투척 애니메이션(PlayerAnimation)용
+    public event System.Action Thrown;
+
     private PlayerMovement movement;
     private PlayerStats stats;
     private PlayerAttack attack;
@@ -37,6 +40,12 @@ public class DaggerThrower : MonoBehaviour
         RefillDaggers();
     }
 
+    // 유물(쌍날 주머니) 획득 시 현재 단검도 늘림
+    public void AddDaggers(int count)
+    {
+        CurrentDaggers = Mathf.Min(MaxDaggers, CurrentDaggers + count);
+    }
+
     // 라운드 시작 시 라운드 관리자가 호출
     public void RefillDaggers()
     {
@@ -48,7 +57,8 @@ public class DaggerThrower : MonoBehaviour
         if (!throwAction.WasPressedThisFrame()) return;
         if (Time.time < readyTime) return;
         if (attack != null && attack.IsLocked) return;  // 근접 공격 쿨 중엔 투척 불가
-        if (CurrentDaggers <= 0) return;                // TODO: 봉인 카드도 여기서 막음
+        if (CurrentDaggers <= 0) return;
+        if (RunState.Instance != null && RunState.Instance.IsSealed) return;  // 봉인: 고른 라운드에만 투척 불가
 
         if (daggerPrefab == null)
         {
@@ -63,6 +73,8 @@ public class DaggerThrower : MonoBehaviour
 
         CurrentDaggers--;
         readyTime = Time.time + cooldown;
+        Thrown?.Invoke();
+        SoundManager.Play(SoundId.Dagger);
         Debug.Log($"단검 투척 — 남은 단검 {CurrentDaggers}/{MaxDaggers}");
     }
 }

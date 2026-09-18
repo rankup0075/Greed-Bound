@@ -28,6 +28,12 @@ public class PlayerAttack : MonoBehaviour
     // 공격 쿨 동안 true. 이동은 막지 않고, 다음 근접 공격과 단검 투척(DaggerThrower)만 막음
     public bool IsLocked => Time.time < lockUntil;
 
+    // 휘두르는 순간 (단계 0~2) — 프레임 애니메이션(PlayerAnimation)용
+    public event System.Action<int> Attacked;
+
+    // 방금 공격의 쿨(다음 공격까지 시간) — 공격 모션 재생 길이를 여기에 맞춤
+    public float LastLockDuration { get; private set; } = 0.25f;
+
     private PlayerMovement movement;
     private PlayerStats stats;
     private InputAction attackAction;
@@ -67,11 +73,12 @@ public class PlayerAttack : MonoBehaviour
         bool continues = Time.time - lastAttackTime <= comboWindow && lastStage < 2;
         int stage = continues ? lastStage + 1 : 0;
 
+        LastLockDuration = baseCooldown * CooldownMul[stage] / stats.attackSpeedMul;
         PerformAttack(stage);
 
         lastStage = stage;
         lastAttackTime = Time.time;
-        lockUntil = Time.time + baseCooldown * CooldownMul[stage] / stats.attackSpeedMul;
+        lockUntil = Time.time + LastLockDuration;
     }
 
     void PerformAttack(int stage)
@@ -81,6 +88,8 @@ public class PlayerAttack : MonoBehaviour
         float radius = CurrentRange(stage);
 
         SlashEffect.Spawn(transform, radius, facing, stage);
+        SoundManager.Play(SoundId.Swing);
+        Attacked?.Invoke(stage);
 
         ContactFilter2D filter = new ContactFilter2D();
         filter.useTriggers = true;
@@ -95,9 +104,19 @@ public class PlayerAttack : MonoBehaviour
         {
             if (col.transform.IsChildOf(transform)) continue;  // 자기 자신 제외
 
-            // 전방 반원 판정: 대상에서 플레이어에게 가장 가까운 점이 바라보는 쪽에 있어야 함
-            Vector2 closest = col.ClosestPoint(center);
-            if ((closest.x - center.x) * facing < 0f) continue;
+            // 전방 반원 판정: 대상 몸의 앞쪽 끝이 플레이어 중심보다 바라보는 쪽에 있어야 함.
+            // ClosestPoint는 플레이어 중심이 적 몸 안에 들어가면(딱 붙으면) 뒤쪽 가장자리를 돌려줄 수 있어 쓰지 않음
+            Bounds bounds = col.bounds;
+            float frontEdge = facing > 0 ? bounds.max.x : bounds.min.x;
+            if ((frontEdge - center.x) * facing < 0f) continue;
+
+            // 원거리 적의 마법구는 검격에 닿으면 파괴 (피해 대상·3타 흔들림 집계에는 넣지 않음)
+            EnemyProjectile projectile = col.GetComponent<EnemyProjectile>();
+            if (projectile != null)
+            {
+                projectile.Shatter();
+                continue;
+            }
 
             IDamageable target = col.GetComponentInParent<IDamageable>();
             if (target == null || !alreadyHit.Add(target)) continue;  // 콜라이더가 여러 개여도 한 번만
@@ -108,6 +127,7 @@ public class PlayerAttack : MonoBehaviour
                 direction = new Vector2(facing, 0f),
                 knockback = finisher ? finisherKnockback : 0f,
                 cancelAttack = finisher,
+                guardBreak = finisher,
                 source = gameObject,
             });
         }
@@ -126,7 +146,7 @@ public class PlayerAttack : MonoBehaviour
         if (movement == null || stats == null) return;
 
         float radius = CurrentRange(0);
-        int facing = Application.isPlaying ? movement.Facing : (transform.localScale.x >= 0 ? 1 : -1);
+        int facing = Application.isPlaying ? movement.Facing : 1;  // 루트는 반전하지 않음 (그림만 반전)
         Gizmos.color = Color.yellow;
 
         const int segments = 24;

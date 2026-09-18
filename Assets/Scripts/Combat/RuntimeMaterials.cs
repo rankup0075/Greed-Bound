@@ -6,6 +6,23 @@ using UnityEngine;
 public static class RuntimeMaterials
 {
     static Material spriteUnlit;
+    static PhysicsMaterial2D noFriction;
+
+    // 마찰 0 물리 재질 — 캐릭터 콜라이더에 붙임. 속도는 코드가 직접 정하므로 바닥 마찰은 필요 없고,
+    // 마찰이 있으면 공중에서 벽 쪽으로 이동키를 누를 때 벽에 붙어 떨어지지 않음
+    public static PhysicsMaterial2D NoFriction
+    {
+        get
+        {
+            if (noFriction == null) noFriction = new PhysicsMaterial2D("NoFriction") { friction = 0f, bounciness = 0f };
+            return noFriction;
+        }
+    }
+
+    public static void ApplyNoFriction(GameObject target)
+    {
+        foreach (Collider2D collider in target.GetComponents<Collider2D>()) collider.sharedMaterial = NoFriction;
+    }
 
     public static Material SpriteUnlit
     {

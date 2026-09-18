@@ -13,8 +13,8 @@ public static class BattleArenaBuilder
     const float WallThickness = 1f;
     const float WallHeight = 30f;
 
-    static readonly Color GroundColor = new Color(0.25f, 0.22f, 0.28f);
-    static readonly Color PlatformColor = new Color(0.48f, 0.42f, 0.36f);
+    internal static readonly Color GroundColor = new Color(0.25f, 0.22f, 0.28f);
+    internal static readonly Color PlatformColor = new Color(0.48f, 0.42f, 0.36f);
 
     // 이전 테스트용으로 만든 오브젝트들 — 새 맵으로 교체
     static readonly string[] ReplacedObjectNames = { "BattleArena", "Ground", "Platform_A", "Platform_B", "Platform_C" };
@@ -106,7 +106,7 @@ public static class BattleArenaBuilder
     }
 
     // 에디터 메뉴 "Greed Bound > 게임 시스템 설정".
-    // GameSystems 오브젝트에 RunState·GameLoopQueue·RoundManager·DebugHud를 붙이고 적 프리팹을 연결.
+    // GameSystems 오브젝트에 RunState·GameLoopQueue·RoundManager·GameHud를 붙이고 적 프리팹을 연결.
     // 삭제된 스크립트(예: EnemyTestSpawner)가 남긴 "Missing Script" 컴포넌트도 정리.
     [MenuItem("Greed Bound/게임 시스템 설정")]
     static void SetupGameSystems()
@@ -140,10 +140,21 @@ public static class BattleArenaBuilder
             rounds = Undo.AddComponent<RoundManager>(systems);
             notes.Add("RoundManager·RunState·GameLoopQueue 추가");
         }
-        if (systems.GetComponent<DebugHud>() == null)
+        if (systems.GetComponent<GameHud>() == null && systems.GetComponent<DebugHud>() == null)
         {
-            Undo.AddComponent<DebugHud>(systems);
-            notes.Add("DebugHud 추가");
+            Undo.AddComponent<GameHud>(systems);
+            notes.Add("GameHud 추가");
+        }
+
+        if (systems.GetComponent<BattleCardEffects>() == null)
+        {
+            Undo.AddComponent<BattleCardEffects>(systems);
+            notes.Add("BattleCardEffects 추가 (행동 변화·증식 카드)");
+        }
+        if (systems.GetComponent<EnvironmentCardEffects>() == null)
+        {
+            Undo.AddComponent<EnvironmentCardEffects>(systems);
+            notes.Add("EnvironmentCardEffects 추가 (환경 카드·죽음의 시계)");
         }
 
         CardSelection cardSelection = systems.GetComponent<CardSelection>();
@@ -204,7 +215,7 @@ public static class BattleArenaBuilder
         return null;
     }
 
-    static GameObject CreateBlock(Transform parent, string name, Sprite sprite, Color color, Vector2 center, Vector2 size)
+    internal static GameObject CreateBlock(Transform parent, string name, Sprite sprite, Color color, Vector2 center, Vector2 size)
     {
         GameObject go = new GameObject(name);
         Undo.RegisterCreatedObjectUndo(go, "전투 맵 생성");
@@ -218,7 +229,7 @@ public static class BattleArenaBuilder
         return go;
     }
 
-    static void CreateWall(Transform parent, string name, float x)
+    internal static void CreateWall(Transform parent, string name, float x)
     {
         GameObject go = new GameObject(name);
         Undo.RegisterCreatedObjectUndo(go, "전투 맵 생성");
@@ -229,15 +240,18 @@ public static class BattleArenaBuilder
         wall.size = new Vector2(WallThickness, WallHeight);
     }
 
-    // 오브젝트 발이 지면 윗면에 닿도록 배치 (Square 스프라이트 기준 세로 크기 = scale.y)
-    static void PlaceOnGround(Transform target, float x)
+    // 오브젝트 발이 지면 윗면에 닿도록 배치. 판정 크기는 BoxCollider2D(루트 스케일 1 구조), 없으면 Square 스프라이트 기준 scale.y
+    internal static void PlaceOnGround(Transform target, float x)
     {
         Undo.RecordObject(target, "전투 맵 생성");
-        float halfHeight = Mathf.Abs(target.localScale.y) * 0.5f;
+        BoxCollider2D box = target.GetComponent<BoxCollider2D>();
+        float halfHeight = box != null
+            ? (box.size.y * 0.5f - box.offset.y) * Mathf.Abs(target.localScale.y)
+            : Mathf.Abs(target.localScale.y) * 0.5f;
         target.position = new Vector3(x, ArenaLayout.GroundTop + halfHeight + 0.01f, target.position.z);
     }
 
-    static Sprite LoadSquareSprite()
+    internal static Sprite LoadSquareSprite()
     {
         string path = AssetDatabase.GUIDToAssetPath(SquareSpriteGuid);
         if (string.IsNullOrEmpty(path)) return null;

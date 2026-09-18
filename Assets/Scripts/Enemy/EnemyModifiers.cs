@@ -12,9 +12,27 @@ public class EnemyModifiers
     public float damageTakenMul = 1f;           // 강철 피부 ×0.7
     public float lowHealthDamageTakenMul = 1f;  // 불굴 ×0.5 (체력 30% 이하일 때)
 
+    // 행동 변화
+    public int revengeStacks = 0;               // 복수 — 공격력 ×1.25^장수, 4초
+    public int explodingCorpseStacks = 0;       // 폭발하는 시체 — 폭발 피해 × 장수
+    public float regenPerSecond = 0f;           // 재생 +0.108 (초당 최대 체력 비율)
+    public float hunterSpeedMul = 1f;           // 사냥꾼 ×1.4 (가까울 때만)
+    public int berserkerStacks = 0;             // 광전사 — 공격력 × (1 + 장수 × 사망률)
+
     // 수 (합)
-    public int extraStartEnemies = 0;           // 증원 +2
+    public int extraStartEnemies = 0;           // 증원 +2 (16 상한 초과분은 2마리당 정예 교체)
     public int extraElites = 0;                 // 지옥문 +1
+    public int splitStacks = 0;                 // 분열 — 죽을 때 소형 적 장수만큼
+    public int legionStacks = 0;                // 군단 — 지원군 수 × 장수
+    public int summoningStacks = 0;             // 소환술 — 한 번에 장수만큼
+    public int undeadArmyStacks = 0;            // 죽음의 군세 — 확률 30% × 장수(최대 100%), 5장부터 부활 가능 횟수 +1
+
+    // 환경/규칙 (장수) — 봉인은 라운드 한정이라 RunState.sealedRound
+    public int darknessStacks = 0;              // 어둠 — 시야 반경 ×0.8^(장수-1), 최소 ×0.5
+    public int burningGroundStacks = 0;         // 불타는 대지 — 한 번에 화염 지대 장수만큼
+    public int manaStormStacks = 0;             // 마력 폭풍 — 한 번에 낙뢰 장수만큼
+    public int deathZoneStacks = 0;             // 죽음의 영역 — 축소 시간 32초 ÷ 장수 (최소 12초)
+    public int deathClockStacks = 0;            // 죽음의 시계 — 45초 - 8초 × (장수-1) (최소 25초)
 
     // 저주·특수 (합)
     public float lifesteal = 0f;                // 탐식 +0.4

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: env_death_zone
   category: 3
   displayName: "\uC8FD\uC74C\uC758 \uC601\uC5ED"
-  description: "32\uCD08\uC5D0 \uAC78\uCCD0 \uC804\uC7A5\uC774 \uC591\uCABD\uC5D0\uC11C
+  description: "25\uCD08\uC5D0 \uAC78\uCCD0 \uC804\uC7A5\uC774 \uC591\uCABD\uC5D0\uC11C
     \uC881\uC544\uC9D0"
   risk: 20
   reward: 50

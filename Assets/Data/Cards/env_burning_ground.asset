@@ -15,8 +15,8 @@ MonoBehaviour:
   id: env_burning_ground
   category: 3
   displayName: "\uBD88\uD0C0\uB294 \uB300\uC9C0"
-  description: "4.2\uCD08\uB9C8\uB2E4 \uC608\uACE0 \uD6C4 \uBC14\uB2E5\uC5D0 \uD654\uC5FC
+  description: "4.5\uCD08\uB9C8\uB2E4 \uC608\uACE0 \uD6C4 \uBC14\uB2E5\uC5D0 \uD654\uC5FC
     \uC9C0\uB300\uAC00 \uC0DD\uAE40"
-  risk: 14
-  reward: 35
+  risk: 9
+  reward: 45
   effect: 31

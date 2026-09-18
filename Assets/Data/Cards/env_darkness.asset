@@ -16,6 +16,6 @@ MonoBehaviour:
   category: 3
   displayName: "\uC5B4\uB460"
   description: "\uC2DC\uC57C\uAC00 \uC881\uC544\uC9D0"
-  risk: 13
-  reward: 30
+  risk: 8
+  reward: 40
   effect: 30

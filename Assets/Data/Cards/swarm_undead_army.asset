@@ -16,7 +16,8 @@ MonoBehaviour:
   category: 2
   displayName: "\uC8FD\uC74C\uC758 \uAD70\uC138"
   description: "\uC8FD\uC740 \uC801\uC774 30% \uD655\uB960\uB85C 2\uCD08 \uB4A4 \uCCB4\uB825
-    50%\uB85C \uBD80\uD65C (1\uD68C)"
-  risk: 22
-  reward: 50
+    50%\uB85C \uBD80\uD65C. \uACB9\uCE60\uC218\uB85D \uD655\uB960\uC774 \uC624\uB974\uACE0,
+    \uD655\uC815 \uD6C4\uC5D4 \uC5EC\uB7EC \uBC88 \uBD80\uD65C"
+  risk: 30
+  reward: 30
   effect: 24

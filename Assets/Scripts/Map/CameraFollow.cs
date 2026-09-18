@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 // Main Camera에 붙이는 스크립트 (Spec 8장 카메라).
 // 플레이어를 가로로만 부드럽게 따라가고(세로 고정), 맵 끝에서 멈추며, 피격 시 흔들림.
@@ -22,9 +23,15 @@ public class CameraFollow : MonoBehaviour
     private float followX;
     private float shakeTimer;
 
+    [Header("픽셀아트 (Spec 8장)")]
+    public int assetsPPU = 36;
+    public int referenceWidth = 640;
+    public int referenceHeight = 360;
+
     void Awake()
     {
         cam = GetComponent<Camera>();
+        SetupPixelPerfect();
         if (target == null)
         {
             PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
@@ -42,6 +49,19 @@ public class CameraFollow : MonoBehaviour
     {
         if (target != null) followX = ClampX(target.position.x);
         Apply(Vector2.zero);
+    }
+
+    // 상점·로비: 기준 해상도를 넓혀(같은 PPU) 카메라가 뒤로 물러난 것처럼 넓게 보이게 하고, 맵 범위 안에서 가로 추적.
+    // 지면이 화면 아래에서 떨어진 거리는 전투 맵과 같게 세로 위치를 맞춤
+    public void UseWideView(int width, int height, float mapHalfWidth)
+    {
+        referenceWidth = width;
+        referenceHeight = height;
+        SetupPixelPerfect();
+        fixedY = ArenaLayout.GroundTop - ArenaLayout.GroundBottomMargin + height / (float)assetsPPU * 0.5f;
+        mapMinX = -mapHalfWidth;
+        mapMaxX = mapHalfWidth;
+        SnapToTarget();
     }
 
     public void Shake()
@@ -70,10 +90,22 @@ public class CameraFollow : MonoBehaviour
         Apply(offset);
     }
 
+    // Pixel Perfect Camera: 640×360 / PPU 36. Stretch Fill이라 창 크기와 무관하게 보이는 범위가 같음 (씬마다 따로 설정하지 않게 실행 시 붙임)
+    void SetupPixelPerfect()
+    {
+        if (!TryGetComponent(out PixelPerfectCamera pixelPerfect)) pixelPerfect = gameObject.AddComponent<PixelPerfectCamera>();
+        pixelPerfect.assetsPPU = assetsPPU;
+        pixelPerfect.refResolutionX = referenceWidth;
+        pixelPerfect.refResolutionY = referenceHeight;
+        pixelPerfect.cropFrame = PixelPerfectCamera.CropFrame.StretchFill;
+        pixelPerfect.gridSnapping = PixelPerfectCamera.GridSnapping.None;  // 스프라이트가 들어오면 UpscaleRenderTexture 검토
+    }
+
     // 화면 가로 절반만큼 안쪽으로 제한해서 맵 밖이 보이지 않게
     float ClampX(float x)
     {
-        float halfWidth = cam.orthographicSize * cam.aspect;
+        // Pixel Perfect Camera(Stretch Fill)라 보이는 가로 = 기준 해상도 폭. 기준을 바꾼 프레임에도 바로 맞게 직접 계산
+        float halfWidth = referenceWidth / (float)assetsPPU * 0.5f;
         float min = mapMinX + halfWidth;
         float max = mapMaxX - halfWidth;
         if (min > max) return (mapMinX + mapMaxX) * 0.5f;

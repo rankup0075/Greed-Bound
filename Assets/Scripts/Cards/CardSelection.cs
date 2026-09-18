@@ -5,11 +5,11 @@ using UnityEngine.InputSystem;
 
 // 라운드 전 카드 선택 → 적용 안내 → 탐욕 (Spec 1장, 3장 "선택 화면 흐름").
 // RoundManager가 Begin()으로 열고, 끝나면 콜백으로 전투를 시작함.
-// 화면은 임시 UI(OnGUI). 정식 UI로 바꿀 때 흐름 로직은 그대로 두고 그리는 부분만 교체.
+// 화면은 CardSelectionUI(정식 uGUI)가 그림 — 이 파일은 흐름·상태만 가지고, 아래 읽기 전용 속성으로 넘겨줌.
 [RequireComponent(typeof(RunState))]
 public class CardSelection : MonoBehaviour
 {
-    enum Step { Hidden, Choose, Applied, Greed }
+    public enum Step { Hidden, Choose, Applied, Greed }
 
     [Header("연결")]
     public CardLibrary library;
@@ -25,6 +25,7 @@ public class CardSelection : MonoBehaviour
     private PlayerHealth player;
     private InputAction moveAction;
     private InputAction confirmAction;
+    private InputAction rerollAction;
 
     private Step step = Step.Hidden;
     private readonly List<CardData> offered = new List<CardData>();
@@ -38,16 +39,25 @@ public class CardSelection : MonoBehaviour
     private CardData chosen;
     private float riskBefore;
     private float multiplierBefore;
-
-    // 임시 UI 스타일
-    private GUIStyle titleStyle, nameStyle, bodyStyle, smallStyle, centerStyle;
+    private RunState.CardPickResult pickResult;   // 시너지 변화·유물 획득 안내
 
     void Awake()
     {
         run = GetComponent<RunState>();
         moveAction = InputSystem.actions.FindAction("Player/Move", throwIfNotFound: true);
         confirmAction = InputSystem.actions.FindAction("Player/Interact", throwIfNotFound: true);
+        rerollAction = InputSystem.actions.FindAction("Player/Reroll", throwIfNotFound: true);
+
+        // íë©´ì ì¬ì ê³ ì¹ì§ ììë ëëë¡ ì¤ì¤ë¡ ë¶ì
+        if (GetComponent<CardSelectionUI>() == null) gameObject.AddComponent<CardSelectionUI>();
     }
+
+    // 영구 강화 넓은 시야: 3장 → 4장
+    int OfferCount => offerCount + (MetaProgress.Level(MetaUpgradeId.WideSight) > 0 ? 1 : 0);
+
+    // 리롤 가능 여부: 남은 횟수가 있고, 탐욕 단계는 영구 강화 탐욕의 눈이 있을 때만
+    bool CanReroll => run.rerollsLeft > 0
+        && (step == Step.Choose || (step == Step.Greed && offered.Count > 0 && MetaProgress.Level(MetaUpgradeId.GreedEye) > 0));
 
     void Start()
     {
@@ -57,7 +67,7 @@ public class CardSelection : MonoBehaviour
     public void Begin(Action onFinished)
     {
         this.onFinished = onFinished;
-        BuildOffer();
+        BuildOffer(OfferCount);
 
         if (offered.Count == 0)
         {
@@ -72,8 +82,8 @@ public class CardSelection : MonoBehaviour
         previousMove = moveAction.ReadValue<float>();
     }
 
-    // 구현된 카드 중에서 서로 다른 카드 offerCount장
-    void BuildOffer()
+    // 구현된 카드 중에서 서로 다른 카드 count장 (리롤도 같은 방식으로 새로 뽑음)
+    void BuildOffer(int count)
     {
         offered.Clear();
         if (library == null) return;
@@ -84,7 +94,7 @@ public class CardSelection : MonoBehaviour
             if (card != null && CardEffects.IsImplemented(card.effect)) pool.Add(card);
         }
 
-        while (offered.Count < offerCount && pool.Count > 0)
+        while (offered.Count < count && pool.Count > 0)
         {
             int index = UnityEngine.Random.Range(0, pool.Count);
             offered.Add(pool[index]);
@@ -99,6 +109,14 @@ public class CardSelection : MonoBehaviour
         int navigation = ReadNavigation();
         bool confirm = Time.frameCount != openedFrame && confirmAction.WasPressedThisFrame();
 
+        // R — 제시된 카드를 같은 장수만큼 새로 뽑음 (선택 중인 칸 위치는 유지)
+        if (rerollAction.WasPressedThisFrame() && CanReroll)
+        {
+            run.rerollsLeft--;
+            BuildOffer(offered.Count);
+            return;
+        }
+
         switch (step)
         {
             case Step.Choose:
@@ -108,7 +126,8 @@ public class CardSelection : MonoBehaviour
                     chosen = offered[cursor];
                     riskBefore = run.Risk;
                     multiplierBefore = run.RewardMultiplier;
-                    run.AddCard(chosen, false, player);
+                    pickResult = run.AddCard(chosen, false, player);
+                    SoundManager.Play(SoundId.CardPick);
                     offered.RemoveAt(cursor);
 
                     step = Step.Applied;
@@ -149,9 +168,14 @@ public class CardSelection : MonoBehaviour
 
     void TakeGreed(CardData card)
     {
-        run.AddCard(card, true, player);
-        if (RoundManager.Instance != null)
-            RoundManager.Instance.ShowMessage($"탐욕: {card.displayName} (위험도·보상 ×{RunState.GreedMultiplier})");
+        RunState.CardPickResult result = run.AddCard(card, true, player);
+        SoundManager.Play(SoundId.CardPick);
+        if (RoundManager.Instance == null) return;
+
+        string text = $"탐욕: {card.displayName} (위험도·보상 ×{RunState.GreedMultiplier})";
+        foreach (CardCombo.Combo combo in result.combos) text += $"\n조합 발동: {combo.name} — {combo.description}";
+        if (result.rewards.Count > 0) text += "\n" + string.Join("\n", result.rewards);
+        RoundManager.Instance.ShowMessage(text);
     }
 
     void Finish()
@@ -180,147 +204,26 @@ public class CardSelection : MonoBehaviour
         return ((value % count) + count) % count;
     }
 
-    // ───────────── 임시 UI ─────────────
+    // ───────────── 화면(CardSelectionUI)이 읽는 상태 ─────────────
 
-    const float VirtualHeight = 720f;
-    const float CardWidth = 250f;
-    const float CardHeight = 330f;
-    const float CardGap = 28f;
+    public Step CurrentStep => step;
+    public IReadOnlyList<CardData> Offered => offered;
+    public int Cursor => cursor;
+    public float Timer => timer;                       // 적용 안내 남은 시간 / 탐욕 제한 시간
+    public bool StopSelected => step == Step.Greed && cursor >= offered.Count;
 
-    void OnGUI()
+    public CardData Chosen => chosen;
+    public float RiskBefore => riskBefore;
+    public float MultiplierBefore => multiplierBefore;
+    public RunState.CardPickResult PickResult => pickResult;
+
+    // 카드에 적용되는 배율 — 탐욕 단계에서 고르면 위험도·보상이 ×1.3
+    public float StepMultiplier => step == Step.Greed ? RunState.GreedMultiplier : 1f;
+
+    public string RerollHint()
     {
-        if (step == Step.Hidden) return;
-        EnsureStyles();
-
-        // 화면 높이 720 기준으로 크기를 맞춤
-        float scale = Screen.height / VirtualHeight;
-        GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
-        float width = Screen.width / scale;
-
-        DrawRect(new Rect(0, 0, width, VirtualHeight), new Color(0f, 0f, 0f, 0.7f));
-
-        switch (step)
-        {
-            case Step.Choose: DrawChoose(width); break;
-            case Step.Applied: DrawApplied(width); break;
-            case Step.Greed: DrawGreed(width); break;
-        }
-
-        GUI.matrix = Matrix4x4.identity;
-    }
-
-    void DrawChoose(float width)
-    {
-        GUI.Label(new Rect(0, 60, width, 50), $"라운드 {run.round} — 적에게 걸 강화를 고르세요", titleStyle);
-        DrawCardRow(width, offered, 1f, includeStop: false);
-        GUI.Label(new Rect(0, 620, width, 40), "← → 선택     Enter 결정", centerStyle);
-    }
-
-    void DrawApplied(float width)
-    {
-        Rect box = new Rect(width * 0.5f - 300, 150, 600, 400);
-        DrawRect(box, new Color(0.12f, 0.1f, 0.14f, 0.95f));
-        DrawRect(new Rect(box.x, box.y, box.width, 6), CardData.CategoryColor(chosen.category));
-
-        float y = box.y + 30;
-        GUI.Label(new Rect(box.x, y, box.width, 30), $"카드 적용 — {CardData.CategoryName(chosen.category)}", centerStyle); y += 40;
-        GUI.Label(new Rect(box.x, y, box.width, 50), chosen.displayName, titleStyle); y += 60;
-        GUI.Label(new Rect(box.x + 40, y, box.width - 80, 70), chosen.description, bodyStyle); y += 90;
-
-        string overload = riskBefore < RunState.OverloadRisk && run.IsOverloaded ? "   돌파!" : "";
-        GUI.Label(new Rect(box.x, y, box.width, 30), $"위험도  {riskBefore:F0} → {run.Risk:F0}{overload}", centerStyle); y += 36;
-        GUI.Label(new Rect(box.x, y, box.width, 30), $"보상 배수  x{multiplierBefore:F2} → x{run.RewardMultiplier:F2}", centerStyle);
-
-        GUI.Label(new Rect(box.x, box.yMax - 50, box.width, 30), $"{Mathf.CeilToInt(timer)}초 뒤 자동 진행     Enter 넘기기", smallStyle);
-    }
-
-    void DrawGreed(float width)
-    {
-        GUI.Label(new Rect(0, 50, width, 50), "탐욕 — 한 장 더 가져가시겠습니까?", titleStyle);
-        GUI.Label(new Rect(0, 100, width, 30),
-            $"탐욕으로 가져간 카드는 위험도·보상 ×{RunState.GreedMultiplier}, 시너지 집계 제외     남은 시간 {Mathf.CeilToInt(timer)}초",
-            centerStyle);
-        DrawCardRow(width, offered, RunState.GreedMultiplier, includeStop: true);
-        GUI.Label(new Rect(0, 620, width, 40), "← → 선택     Enter 결정", centerStyle);
-    }
-
-    // 카드 여러 장 가로 배치. includeStop이면 맨 오른쪽에 "그만한다"
-    void DrawCardRow(float width, List<CardData> cards, float multiplier, bool includeStop)
-    {
-        int count = cards.Count + (includeStop ? 1 : 0);
-        float totalWidth = count * CardWidth + (count - 1) * CardGap;
-        float x = width * 0.5f - totalWidth * 0.5f;
-        float y = 170f;
-
-        for (int i = 0; i < count; i++)
-        {
-            Rect rect = new Rect(x + i * (CardWidth + CardGap), y, CardWidth, CardHeight);
-            bool selected = i == cursor;
-            if (i < cards.Count) DrawCard(rect, cards[i], multiplier, selected);
-            else DrawStop(rect, selected);
-        }
-    }
-
-    void DrawCard(Rect rect, CardData card, float multiplier, bool selected)
-    {
-        Color categoryColor = CardData.CategoryColor(card.category);
-        if (selected)
-        {
-            rect.y -= 14;  // 선택된 카드는 살짝 위로
-            DrawRect(new Rect(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10), Color.white);
-        }
-        DrawRect(rect, new Color(0.14f, 0.12f, 0.16f, 1f));
-        DrawRect(new Rect(rect.x, rect.y, rect.width, 8), categoryColor);
-
-        float y = rect.y + 22;
-        Color previous = GUI.contentColor;
-        GUI.contentColor = categoryColor;
-        GUI.Label(new Rect(rect.x, y, rect.width, 26), CardData.CategoryName(card.category), centerStyle);
-        GUI.contentColor = previous;
-        y += 34;
-
-        GUI.Label(new Rect(rect.x, y, rect.width, 40), card.displayName, nameStyle); y += 56;
-        GUI.Label(new Rect(rect.x, y, rect.width, 28), $"위험도 +{card.risk * multiplier:0.#}", centerStyle); y += 30;
-        GUI.Label(new Rect(rect.x, y, rect.width, 28), $"보상 +{card.reward * multiplier:0.#}%", centerStyle); y += 44;
-        GUI.Label(new Rect(rect.x + 16, y, rect.width - 32, rect.yMax - y - 12), card.description, bodyStyle);
-    }
-
-    void DrawStop(Rect rect, bool selected)
-    {
-        if (selected)
-        {
-            rect.y -= 14;
-            DrawRect(new Rect(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10), Color.white);
-        }
-        DrawRect(rect, new Color(0.2f, 0.2f, 0.22f, 1f));
-        GUI.Label(new Rect(rect.x, rect.y + rect.height * 0.5f - 40, rect.width, 40), "그만한다", nameStyle);
-        GUI.Label(new Rect(rect.x, rect.y + rect.height * 0.5f + 10, rect.width, 30), "이대로 전투 시작", centerStyle);
-    }
-
-    static void DrawRect(Rect rect, Color color)
-    {
-        Color previous = GUI.color;
-        GUI.color = color;
-        GUI.DrawTexture(rect, Texture2D.whiteTexture);
-        GUI.color = previous;
-    }
-
-    void EnsureStyles()
-    {
-        if (titleStyle != null) return;
-
-        titleStyle = MakeStyle(34, TextAnchor.MiddleCenter, FontStyle.Bold);
-        nameStyle = MakeStyle(30, TextAnchor.MiddleCenter, FontStyle.Bold);
-        centerStyle = MakeStyle(20, TextAnchor.MiddleCenter, FontStyle.Normal);
-        smallStyle = MakeStyle(17, TextAnchor.MiddleCenter, FontStyle.Normal);
-        bodyStyle = MakeStyle(19, TextAnchor.UpperCenter, FontStyle.Normal);
-        bodyStyle.wordWrap = true;
-    }
-
-    static GUIStyle MakeStyle(int size, TextAnchor anchor, FontStyle fontStyle)
-    {
-        GUIStyle style = new GUIStyle(GUI.skin.label) { fontSize = size, alignment = anchor, fontStyle = fontStyle };
-        style.normal.textColor = Color.white;
-        return style;
+        if (CanReroll) return $"     R 리롤 ({run.rerollsLeft}회 남음)";
+        if (run.rerollsLeft > 0 && step == Step.Greed) return "     (탐욕 단계 리롤: 로비 강화 '탐욕의 눈' 필요)";
+        return "";
     }
 }

@@ -17,6 +17,6 @@ MonoBehaviour:
   displayName: "\uC7AC\uC0DD"
   description: "\uC801\uC774 \uCD08\uB2F9 \uCD5C\uB300 \uCCB4\uB825\uC758 10.8%\uB97C
     \uD68C\uBCF5"
-  risk: 10
-  reward: 30
+  risk: 16
+  reward: 15
   effect: 12

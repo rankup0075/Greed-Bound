@@ -19,6 +19,10 @@ public class PlayerMovement : MonoBehaviour
     public float dashJumpWindow = 0.1f; // 점프 후 이 시간 안에 대쉬하면 점프 궤적 유지 (대쉬 점프)
     public float afterimageInterval = 0.03f;
 
+    [Header("발판 내려가기 (↓ + C)")]
+    public float dropStartSpeed = 2f;  // 뚫고 내려가기 시작하는 낙하 속도
+    public float dropMaxTime = 0.5f;   // 이 시간이 지나면 발판 충돌 복구
+
     [Header("디버그")]
     public bool logJumpHeight = false; // 착지할 때 점프 최고점을 Console에 출력
 
@@ -27,13 +31,22 @@ public class PlayerMovement : MonoBehaviour
     public int Facing => facingRight ? 1 : -1;  // 오른쪽 = 1, 왼쪽 = -1
     public bool IsDashing => dashStepsRemaining > 0;
     public float DashCooldownRemaining => Mathf.Max(0f, dashReadyTime - Time.time);
+    public bool IsSlamFalling => slamFallSpeed > 0f;
 
     private Rigidbody2D rb;
     private PlayerStats stats;
+    private CharacterVisual visual;
     private SpriteRenderer spriteRenderer;
     private InputAction moveAction;    // InputSystem_Actions의 Player/Move (←→)
     private InputAction jumpAction;    // InputSystem_Actions의 Player/Jump (C)
     private InputAction dashAction;    // InputSystem_Actions의 Player/Dash (Left Shift)
+    private InputAction downAction;    // InputSystem_Actions의 Player/Down (↓) — ↓ + C로 발판 내려가기
+
+    // 발판 내려가기
+    private Collider2D collider2d;
+    private Collider2D droppingThrough;
+    private float dropUntil;
+    private readonly System.Collections.Generic.List<ContactPoint2D> contacts = new System.Collections.Generic.List<ContactPoint2D>();
     private float moveInput;           // -1(왼쪽) ~ 1(오른쪽) 사이 값
     private bool jumpRequested;        // Update에서 누른 점프를 FixedUpdate까지 전달하는 표시
     private bool dashRequested;
@@ -53,6 +66,10 @@ public class PlayerMovement : MonoBehaviour
     private float lastJumpTime = float.NegativeInfinity;
     private float afterimageTimer;
 
+    // 공중 지면 강타: 가로 0, 일정 속도로 수직 낙하. 착지하면 콜백 (PlayerSkill)
+    private float slamFallSpeed;
+    private System.Action onSlamLanded;
+
     // 점프 최고점 측정용 (C로 점프했을 때만 측정. 걸어서 떨어진 건 제외)
     private bool measuringJump;
     private float takeoffY;
@@ -65,18 +82,23 @@ public class PlayerMovement : MonoBehaviour
         // RequireComponent는 새로 붙일 때만 자동 추가되므로, 이미 씬에 있던 Player를 위해 없으면 직접 추가
         stats = GetComponent<PlayerStats>();
         if (stats == null) stats = gameObject.AddComponent<PlayerStats>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        visual = CharacterVisual.Ensure(gameObject);  // 그림은 자식 Visual, 루트는 판정만
+        spriteRenderer = visual.Renderer;
 
         rb.gravityScale = gravityScale;
         // 낙하 속도가 빨라 얇은 발판을 뚫고 지나가지 않도록 연속 충돌 검사
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         // 물리(50Hz)와 화면 주사율 차이로 카메라 추적 시 떨려 보이지 않게 보간
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        // 공중에서 벽을 향해 이동키를 누르고 있어도 벽에 붙지 않게 마찰 0
+        RuntimeMaterials.ApplyNoFriction(gameObject);
 
         // 프로젝트 전역 입력 에셋(InputSystem_Actions)에서 액션을 찾아둠
         moveAction = InputSystem.actions.FindAction("Player/Move", throwIfNotFound: true);
         jumpAction = InputSystem.actions.FindAction("Player/Jump", throwIfNotFound: true);
         dashAction = InputSystem.actions.FindAction("Player/Dash", throwIfNotFound: true);
+        downAction = InputSystem.actions.FindAction("Player/Down", throwIfNotFound: true);
+        collider2d = GetComponent<Collider2D>();
 
         groundFilter.useTriggers = false;
         groundFilter.SetNormalAngle(45f, 135f);
@@ -86,6 +108,22 @@ public class PlayerMovement : MonoBehaviour
     {
         // 사망 등으로 꺼질 때 대쉬 도중이었어도 중력이 돌아오게
         CancelDash();
+        CancelSlamFall();
+    }
+
+    // 공중 지면 강타 시작: 대쉬를 끊고 수직 낙하. 착지하는 물리 스텝에 onLanded 호출
+    public void BeginSlamFall(float speed, System.Action onLanded)
+    {
+        CancelDash();
+        slamFallSpeed = speed;
+        onSlamLanded = onLanded;
+        measuringJump = false;
+    }
+
+    public void CancelSlamFall()
+    {
+        slamFallSpeed = 0f;
+        onSlamLanded = null;
     }
 
     void Update()
@@ -97,7 +135,8 @@ public class PlayerMovement : MonoBehaviour
         if (jumpAction.WasPressedThisFrame()) jumpRequested = true;
         if (dashAction.WasPressedThisFrame()) dashRequested = true;
 
-        // 방향 바꿀 때 스프라이트 좌우 반전 (나중에 실제 그림 넣으면 자연스럽게 보임)
+        // 방향 바꿀 때 스프라이트 좌우 반전 (나중에 실제 그림 넣으면 자연스럽게 보임). 강타 낙하 중엔 고정
+        if (IsSlamFalling) return;
         if (moveInput > 0 && !facingRight) Flip();
         else if (moveInput < 0 && facingRight) Flip();
 
@@ -106,12 +145,41 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        bool wasGrounded = isGrounded;
         isGrounded = rb.IsTouching(groundFilter);
+        // 착지음 (떨어지던 중에 바닥에 닿은 순간만)
+        if (isGrounded && !wasGrounded && rb.linearVelocity.y <= 0.1f) SoundManager.Play(SoundId.Land);
+
+        // 공중 지면 강타 낙하 중: 좌우 이동·점프·대쉬 입력 무시, 착지하면 강타
+        if (IsSlamFalling)
+        {
+            jumpRequested = false;
+            dashRequested = false;
+            if (isGrounded)
+            {
+                System.Action landed = onSlamLanded;
+                CancelSlamFall();
+                rb.linearVelocity = Vector2.zero;
+                landed?.Invoke();
+                return;
+            }
+            rb.linearVelocity = new Vector2(0f, -slamFallSpeed);
+            return;
+        }
 
         // 실제 물리 이동은 FixedUpdate에서 (물리 연산은 여기서 하는 게 정석)
         Vector2 velocity = new Vector2(moveInput * moveSpeed * stats.moveSpeedMul, rb.linearVelocity.y);
 
         // 바닥에 서 있을 때만 점프. 공중에서 누른 입력은 버림 (이중 점프 없음). 대쉬 중에도 점프는 즉시 반영
+        // ↓ + C: 밟고 있는 one-way 발판을 뚫고 내려감 (발판 위가 아니면 평소처럼 점프)
+        if (jumpRequested && isGrounded && downAction.IsPressed() && TryDropThrough())
+        {
+            jumpRequested = false;
+            isGrounded = false;
+            velocity.y = -dropStartSpeed;
+        }
+        UpdateDropThrough();
+
         bool jumpedNow = jumpRequested && isGrounded;
         jumpRequested = false;
         if (jumpedNow)
@@ -119,6 +187,7 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = jumpSpeed * stats.jumpMul;
             isGrounded = false;
             lastJumpTime = Time.time;
+            SoundManager.Play(SoundId.Jump);
 
             measuringJump = true;
             takeoffY = rb.position.y;
@@ -155,6 +224,7 @@ public class PlayerMovement : MonoBehaviour
         dashDirection = Facing;
         dashReadyTime = Time.time + dashCooldown;
         afterimageTimer = 0f;
+        SoundManager.Play(SoundId.Dash);
 
         // 지상 대쉬 / 점프 직후 대쉬 → 대쉬 점프(세로 유지). 그 외 공중 대쉬 → 수평 고정
         bool justJumped = Time.time - lastJumpTime <= dashJumpWindow;
@@ -166,6 +236,35 @@ public class PlayerMovement : MonoBehaviour
         dashKeepsVertical = keepsVertical;
         rb.gravityScale = keepsVertical ? gravityScale : 0f;
         if (!keepsVertical) measuringJump = false;
+    }
+
+    // 발 아래 닿아 있는 one-way 발판과만 충돌을 끔. 없으면 false
+    bool TryDropThrough()
+    {
+        if (collider2d == null) return false;
+        contacts.Clear();
+        rb.GetContacts(groundFilter, contacts);
+        foreach (ContactPoint2D contact in contacts)
+        {
+            Collider2D platform = contact.collider;
+            if (platform == null || platform.GetComponent<OneWayPlatform>() == null) continue;
+
+            if (droppingThrough != null) Physics2D.IgnoreCollision(collider2d, droppingThrough, false);
+            Physics2D.IgnoreCollision(collider2d, platform, true);
+            droppingThrough = platform;
+            dropUntil = Time.time + dropMaxTime;
+            return true;
+        }
+        return false;
+    }
+
+    // 발판 아래로 빠져나갔거나 시간이 지나면 충돌 복구
+    void UpdateDropThrough()
+    {
+        if (droppingThrough == null) return;
+        if (collider2d.bounds.max.y >= droppingThrough.bounds.min.y && Time.time < dropUntil) return;
+        Physics2D.IgnoreCollision(collider2d, droppingThrough, false);
+        droppingThrough = null;
     }
 
     // 대쉬를 즉시 끝냄 (라운드 시작 시 위치 초기화, 비활성화). 쿨은 그대로 유지
@@ -204,8 +303,6 @@ public class PlayerMovement : MonoBehaviour
     void Flip()
     {
         facingRight = !facingRight;
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
+        visual.SetFacing(Facing);  // 그림만 반전. 루트(판정) 스케일은 건드리지 않음
     }
 }

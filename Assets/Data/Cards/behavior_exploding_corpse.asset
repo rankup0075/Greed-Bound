@@ -18,6 +18,6 @@ MonoBehaviour:
   description: "\uC801\uC774 \uC8FD\uACE0 \uC7A0\uC2DC \uB4A4 \uC2DC\uCCB4\uAC00
     \uD3ED\uBC1C. \uC8FC\uBCC0 \uC801\uC5D0\uAC8C\uB294 \uB354 \uD070 \uD53C\uD574
     (\uC5F0\uC1C4 \uD3ED\uBC1C)"
-  risk: 14
-  reward: 35
+  risk: 9
+  reward: 45
   effect: 11

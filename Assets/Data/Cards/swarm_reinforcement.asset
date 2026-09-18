@@ -15,7 +15,8 @@ MonoBehaviour:
   id: swarm_reinforcement
   category: 2
   displayName: "\uC99D\uC6D0"
-  description: "\uC804\uD22C \uC2DC\uC791 \uC2DC \uC801 +2"
+  description: "\uC804\uD22C \uC2DC\uC791 \uC2DC \uC801 +2. \uC801 \uC218\uAC00 \uAC00\uB4DD
+    \uCC28\uBA74 \uB300\uC2E0 \uC77C\uBC18 \uC801\uC774 \uC815\uC608\uB85C \uBC14\uB01C"
   risk: 12
   reward: 30
   effect: 20
