@@ -111,8 +111,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,10 +131,10 @@ TextureImporter:
       name: player_jump_1
       rect:
         serializedVersion: 2
-        x: 96
+        x: 184
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,10 +153,10 @@ TextureImporter:
       name: player_jump_2
       rect:
         serializedVersion: 2
-        x: 192
+        x: 368
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

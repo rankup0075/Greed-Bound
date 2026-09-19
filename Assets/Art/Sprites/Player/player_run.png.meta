@@ -117,8 +117,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,10 +137,10 @@ TextureImporter:
       name: player_run_1
       rect:
         serializedVersion: 2
-        x: 96
+        x: 184
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,10 +159,10 @@ TextureImporter:
       name: player_run_2
       rect:
         serializedVersion: 2
-        x: 192
+        x: 368
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,10 +181,10 @@ TextureImporter:
       name: player_run_3
       rect:
         serializedVersion: 2
-        x: 288
+        x: 552
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,10 +203,10 @@ TextureImporter:
       name: player_run_4
       rect:
         serializedVersion: 2
-        x: 384
+        x: 736
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -225,10 +225,10 @@ TextureImporter:
       name: player_run_5
       rect:
         serializedVersion: 2
-        x: 480
+        x: 920
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -247,10 +247,10 @@ TextureImporter:
       name: player_run_6
       rect:
         serializedVersion: 2
-        x: 576
+        x: 1104
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -269,10 +269,10 @@ TextureImporter:
       name: player_run_7
       rect:
         serializedVersion: 2
-        x: 672
+        x: 1288
         y: 0
-        width: 96
-        height: 76
+        width: 184
+        height: 84
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

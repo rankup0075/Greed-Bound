@@ -126,7 +126,7 @@ public static class AiSourceBatchImport
     }
 
     // PixelConverterWindow.SliceSheet와 같은 처리 (기존 스프라이트 ID 유지 = 애니메이션 참조 유지)
-    static void SliceSheet(string path, int frames, int cw, int ch)
+    internal static void SliceSheet(string path, int frames, int cw, int ch)
     {
         TextureImporter importer = (TextureImporter)AssetImporter.GetAtPath(path);
         importer.textureType = TextureImporterType.Sprite;
@@ -169,7 +169,7 @@ public static class AiSourceBatchImport
     }
 
     // PixelConverterWindow.CreateClip과 같은 처리
-    static void CreateClip(string spritePath, string clipPath, int frames, float fps, bool loop)
+    internal static void CreateClip(string spritePath, string clipPath, int frames, float fps, bool loop)
     {
         string baseName = Path.GetFileNameWithoutExtension(spritePath);
         Sprite[] sprites = AssetDatabase.LoadAllAssetsAtPath(spritePath).OfType<Sprite>()
