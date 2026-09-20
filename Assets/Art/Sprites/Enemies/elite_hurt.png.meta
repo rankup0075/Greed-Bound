@@ -111,7 +111,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -131,9 +131,9 @@ TextureImporter:
       name: elite_hurt_1
       rect:
         serializedVersion: 2
-        x: 158
+        x: 162
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -153,9 +153,9 @@ TextureImporter:
       name: elite_hurt_2
       rect:
         serializedVersion: 2
-        x: 316
+        x: 324
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -167,6 +167,28 @@ TextureImporter:
       bones: []
       spriteID: eed94195d4ccea0a0800000000000000
       internalID: -6868327749114356242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: elite_hurt_3
+      rect:
+        serializedVersion: 2
+        x: 486
+        y: 0
+        width: 162
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 506163cecd6c45d4b96b21db1cf4fd5b
+      internalID: 431200059
       vertices: []
       indices: 
       edges: []
@@ -188,6 +210,7 @@ TextureImporter:
       elite_hurt_0: 7563636802910946291
       elite_hurt_1: -5934517558015151521
       elite_hurt_2: -6868327749114356242
+      elite_hurt_3: 431200059
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

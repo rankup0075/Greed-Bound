@@ -37,6 +37,20 @@ public class ShopManager : MonoBehaviour
 
     // 잡화점 진열장·상점 주인 단 (ShopLayout.ShopCenterX 기준, 진열장 폭은 좌판 수에 맞춤)
     const float KeeperStageWidth = 2.4f;
+
+    // 소품 그림 (AI_Source/tools/build_props.py). 없으면 예전처럼 색 사각형으로 떨어진다
+    const string PropFolder = "Props/";
+    static Sprite Prop(string name) => Resources.Load<Sprite>(PropFolder + name);
+
+    // 여러 칸으로 잘린 시트에서 첫 칸. NPC 는 대기 동작 시트라 이 칸이 서 있는 모습이다.
+    // LoadAll 은 **순서를 보장하지 않으므로** 이름(..._0)으로 골라야 한다
+    static Sprite FirstFrame(string sheet)
+    {
+        Sprite[] frames = Resources.LoadAll<Sprite>(PropFolder + sheet);
+        if (frames == null || frames.Length == 0) return null;
+        foreach (Sprite frame in frames) if (frame.name == sheet + "_0") return frame;
+        return frames[0];
+    }
     const float ShelfHeight = 5.2f;         // 단 위 상점 주인(머리 4.9) 뒤까지
 
     static readonly Color CounterColor = new Color(0.36f, 0.26f, 0.18f);
@@ -108,7 +122,8 @@ public class ShopManager : MonoBehaviour
 
     private readonly List<Stall> stalls = new List<Stall>();
     private readonly List<Npc> npcs = new List<Npc>();
-    private MeshFilter portal;
+    private SpriteRenderer portal;
+    private MeshFilter portalQuad;   // 문 그림이 없을 때의 예전 색 사각형
     private bool inventoryOpen;
     private bool leaving;
     private int refreshesLeft;          // 로비 강화 상점 갱신 — 방문당 1회
@@ -148,7 +163,11 @@ public class ShopManager : MonoBehaviour
         PlacePlayer();
         StockStalls();
         CreateNpcs();
-        portal = WorldGui.CreateQuad("ExitPortal", new Vector2(ShopLayout.PortalX, ArenaLayout.GroundTop), new Vector2(1.2f, PortalHeight), PortalColor, -4);
+        Sprite doorArt = Prop("prop_door");
+        portal = doorArt != null
+            ? WorldGui.CreateSprite("ExitPortal", new Vector2(ShopLayout.PortalX, ArenaLayout.GroundTop), doorArt, -4)
+            : null;
+        if (portal == null) portalQuad = WorldGui.CreateQuad("ExitPortal", new Vector2(ShopLayout.PortalX, ArenaLayout.GroundTop), new Vector2(1.2f, PortalHeight), PortalColor, -4);
 
         ShowMessage($"상점 — 라운드 {run.round}.5");
     }
@@ -334,7 +353,9 @@ public class ShopManager : MonoBehaviour
         {
             ShopCatalog.Item item = picked[i];
             Vector2 feet = ShopLayout.StallFeet(i, total);
-            WorldGui.CreateQuad($"Stall_{i + 1}", feet, new Vector2(2f, CounterHeight), CounterColor, -3);
+            Sprite stallArt = Prop("prop_stall");
+            if (stallArt != null) WorldGui.CreateSprite($"Stall_{i + 1}", feet, stallArt, -3);
+            else WorldGui.CreateQuad($"Stall_{i + 1}", feet, new Vector2(2f, CounterHeight), CounterColor, -3);
             MeshFilter icon = WorldGui.CreateQuad($"Stall_{i + 1}_Item", feet + new Vector2(0f, IconBottom), new Vector2(IconSize, IconSize), item.color, -2);
 
             Stall stall = new Stall { feet = feet, icon = icon };
@@ -363,7 +384,10 @@ public class ShopManager : MonoBehaviour
     {
         float x = ShopLayout.ShopCenterX;
         shelfWidth = ShopLayout.ShelfWidth(stalls.Count);
-        WorldGui.CreateQuad("Shelf", new Vector2(x, ArenaLayout.GroundTop), new Vector2(shelfWidth, ShelfHeight), ShelfColor, -7);
+        Sprite wall = Prop("prop_wall");
+        if (wall != null) WorldGui.CreateSprite("Shelf", new Vector2(x, ArenaLayout.GroundTop), wall, -7, new Vector2(shelfWidth, ShelfHeight));
+        else WorldGui.CreateQuad("Shelf", new Vector2(x, ArenaLayout.GroundTop), new Vector2(shelfWidth, ShelfHeight), ShelfColor, -7);
+
 
         int goodsPerRow = Mathf.Max(1, Mathf.FloorToInt((shelfWidth - 1f) / 1.25f));
         for (int row = 0; row < 4; row++)
@@ -379,15 +403,29 @@ public class ShopManager : MonoBehaviour
         }
 
         // 상점 주인은 좌판 이름표보다 높은 단 위에 서서 앞 좌판에 가려지지 않음
-        WorldGui.CreateQuad("KeeperStage", new Vector2(x, ArenaLayout.GroundTop), new Vector2(KeeperStageWidth, ShopLayout.KeeperStageHeight), ShopCounterColor, -5);
-        AddNpc("상점 주인", ShopkeeperLines, ShopLayout.ShopkeeperFeet, ShopkeeperHeight, ShopkeeperColor, firstLine: 0);  // 들어오자마자 인사
+        Sprite stage = Prop("prop_stage");
+        if (stage != null)
+            // 세로는 그림 높이 그대로 — 조금이라도 늘리면 금색 뚜껑이 중간에 한 번 더 나온다
+            WorldGui.CreateSprite("KeeperStage", new Vector2(x, ArenaLayout.GroundTop), stage, -5,
+                new Vector2(KeeperStageWidth, stage.bounds.size.y));
+        else WorldGui.CreateQuad("KeeperStage", new Vector2(x, ArenaLayout.GroundTop), new Vector2(KeeperStageWidth, ShopLayout.KeeperStageHeight), ShopCounterColor, -5);
+        AddNpc("상점 주인", ShopkeeperLines, ShopLayout.ShopkeeperFeet, ShopkeeperHeight, ShopkeeperColor, firstLine: 0, art: "npc_keeper_idle");  // 들어오자마자 인사
 
-        AddNpc("모험가", AdventurerLines, ShopLayout.AdventurerFeet, AdventurerHeight, AdventurerColor, firstLine: Random.Range(0, AdventurerLines.Length));
+        AddNpc("모험가", AdventurerLines, ShopLayout.AdventurerFeet, AdventurerHeight, AdventurerColor, firstLine: Random.Range(0, AdventurerLines.Length), art: "npc_adventurer_idle");
     }
 
-    void AddNpc(string name, string[] lines, Vector2 feet, float height, Color color, int firstLine)
+    void AddNpc(string name, string[] lines, Vector2 feet, float height, Color color, int firstLine, string art = null)
     {
-        WorldGui.CreateQuad($"Npc_{name}", feet, new Vector2(0.7f, height), color, -2);  // 진열장 앞, 카운터 뒤
+        // art 는 대기 동작 시트 이름(npc_keeper_idle). 컨트롤러 이름은 동작을 뺀 npc_keeper
+        Sprite sprite = art != null ? FirstFrame(art) : null;
+        if (sprite != null)
+        {
+            int cut = art.LastIndexOf('_');
+            string controller = cut > 0 ? art.Substring(0, cut) : art;
+            WorldGui.CreateSprite($"Npc_{name}", feet, sprite, -2, default, controller);  // 진열장 앞, 카운터 뒤
+            height = sprite.bounds.size.y;                             // 말풍선을 실제 머리 위에 띄우려고
+        }
+        else WorldGui.CreateQuad($"Npc_{name}", feet, new Vector2(0.7f, height), color, -2);
         // 두 NPC가 동시에 대사를 바꾸지 않게 첫 교체 시각을 흩뜨림
         npcs.Add(new Npc { name = name, lines = lines, feet = feet, height = height, line = firstLine, timer = Random.Range(npcLineMinTime, npcLineMaxTime) });
     }
@@ -403,7 +441,8 @@ public class ShopManager : MonoBehaviour
         }
         Color portalColor = PortalColor;
         portalColor.a = 0.6f + 0.25f * Mathf.Sin(Time.time * 3f);
-        WorldGui.SetQuadColor(portal, portalColor);
+        if (portal != null) portal.color = portalColor;
+        else if (portalQuad != null) WorldGui.SetQuadColor(portalQuad, portalColor);
 
         foreach (Npc npc in npcs)
         {
@@ -418,6 +457,10 @@ public class ShopManager : MonoBehaviour
 
     void OnGUI()
     {
+        // 일시정지 중에는 그리지 않는다. OnGUI(임시 UI)는 **정식 UI 캔버스 위에** 그려지기 때문에
+        // 그대로 두면 월드 이름표·말풍선이 일시정지 메뉴를 가린다 (2026-09-20 사용자 보고).
+        // 예전에는 일시정지도 OnGUI 라 GUI.depth 로 눌렀지만 이제는 캔버스라 그 방법을 못 쓴다
+        if (PauseMenu.IsOpen) return;
         if (player == null) return;
         Camera cam = Camera.main;
         if (cam == null) return;

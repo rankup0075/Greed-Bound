@@ -18,6 +18,9 @@ public class LobbyManager : MonoBehaviour
     public float messageDuration = 2.5f;
 
     const float PedestalHeight = 0.7f;
+
+    // 소품 그림 (AI_Source/tools/build_props.py). 없으면 예전처럼 색 사각형으로 떨어진다
+    static Sprite Prop(string name) => Resources.Load<Sprite>("Props/" + name);
     const float OrbBottom = 1.1f;
     const float OrbSize = 0.45f;
     const float PortalHeight = 2.4f;
@@ -46,7 +49,8 @@ public class LobbyManager : MonoBehaviour
     private InputAction interactAction;
     private MeshFilter[] skillOrbs;
     private MeshFilter[] orbs;
-    private MeshFilter portal;
+    private SpriteRenderer portal;
+    private MeshFilter portalQuad;   // 문 그림이 없을 때의 예전 색 사각형
     private bool leaving;
     private string message;
     private float messageTimer;
@@ -87,7 +91,9 @@ public class LobbyManager : MonoBehaviour
         for (int i = 0; i < SkillCatalog.All.Length; i++)
         {
             Vector2 feet = LobbyLayout.SkillFeet(i);
-            WorldGui.CreateQuad($"SkillAltar_{i + 1}", feet, new Vector2(1.2f, PedestalHeight), SkillPedestalColor, -3);
+            Sprite altarArt = Prop("prop_pedestal");
+            if (altarArt != null) WorldGui.CreateSprite($"SkillAltar_{i + 1}", feet, altarArt, -3, new Vector2(1.2f, altarArt.bounds.size.y));
+            else WorldGui.CreateQuad($"SkillAltar_{i + 1}", feet, new Vector2(1.2f, PedestalHeight), SkillPedestalColor, -3);
             skillOrbs[i] = WorldGui.CreateQuad($"SkillAltar_{i + 1}_Orb", feet + new Vector2(0f, OrbBottom), new Vector2(OrbSize, OrbSize), SkillOrbColor(i), -2);
         }
 
@@ -95,10 +101,14 @@ public class LobbyManager : MonoBehaviour
         for (int i = 0; i < MetaCatalog.All.Length; i++)
         {
             Vector2 feet = LobbyLayout.AltarFeet(i);
-            WorldGui.CreateQuad($"Altar_{i + 1}", feet, new Vector2(1.2f, PedestalHeight), PedestalColor, -3);
+            Sprite altarArt = Prop("prop_pedestal");
+            if (altarArt != null) WorldGui.CreateSprite($"Altar_{i + 1}", feet, altarArt, -3, new Vector2(1.2f, altarArt.bounds.size.y));
+            else WorldGui.CreateQuad($"Altar_{i + 1}", feet, new Vector2(1.2f, PedestalHeight), PedestalColor, -3);
             orbs[i] = WorldGui.CreateQuad($"Altar_{i + 1}_Orb", feet + new Vector2(0f, OrbBottom), new Vector2(OrbSize, OrbSize), OrbColor(i), -2);
         }
-        portal = WorldGui.CreateQuad("DeployPortal", LobbyLayout.PortalFeet, new Vector2(1.2f, PortalHeight), PortalColor, -4);
+        Sprite doorArt = Prop("prop_door");
+        portal = doorArt != null ? WorldGui.CreateSprite("DeployPortal", LobbyLayout.PortalFeet, doorArt, -4) : null;
+        if (portal == null) portalQuad = WorldGui.CreateQuad("DeployPortal", LobbyLayout.PortalFeet, new Vector2(1.2f, PortalHeight), PortalColor, -4);
     }
 
     void Update()
@@ -260,13 +270,18 @@ public class LobbyManager : MonoBehaviour
         }
         Color portalColor = PortalColor;
         portalColor.a = 0.6f + 0.25f * Mathf.Sin(Time.time * 3f);
-        WorldGui.SetQuadColor(portal, portalColor);
+        if (portal != null) portal.color = portalColor;
+            else if (portalQuad != null) WorldGui.SetQuadColor(portalQuad, portalColor);
     }
 
     // ───────────── 임시 UI ─────────────
 
     void OnGUI()
     {
+        // 일시정지 중에는 그리지 않는다. OnGUI(임시 UI)는 **정식 UI 캔버스 위에** 그려지기 때문에
+        // 그대로 두면 월드 이름표·말풍선이 일시정지 메뉴를 가린다 (2026-09-20 사용자 보고).
+        // 예전에는 일시정지도 OnGUI 라 GUI.depth 로 눌렀지만 이제는 캔버스라 그 방법을 못 쓴다
+        if (PauseMenu.IsOpen) return;
         if (player == null) return;
         Camera cam = Camera.main;
         if (cam == null) return;

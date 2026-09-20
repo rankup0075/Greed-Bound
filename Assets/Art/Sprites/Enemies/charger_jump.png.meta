@@ -108,8 +108,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,10 +128,10 @@ TextureImporter:
       name: charger_jump_1
       rect:
         serializedVersion: 2
-        x: 136
+        x: 158
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -142,6 +142,28 @@ TextureImporter:
       bones: []
       spriteID: cd575934ca926c110800000000000000
       internalID: 1280756963878467036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charger_jump_2
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 0
+        width: 158
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e33631f40e417e04bbcb92b8f1ddaa2c
+      internalID: 2071825326
       vertices: []
       indices: 
       edges: []
@@ -162,6 +184,7 @@ TextureImporter:
     nameFileIdTable:
       charger_jump_0: 8512203532485982176
       charger_jump_1: 1280756963878467036
+      charger_jump_2: 2071825326
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

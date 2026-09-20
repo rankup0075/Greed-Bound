@@ -3,7 +3,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 // 타이틀 화면 (Spec 9장 "타이틀 화면"). 빌드 설정 맨 앞 = 게임 시작 씬.
-// 게임 시작 → 로비 씬(영구 강화·스킬 선택 → 출전). 임시 UI(OnGUI, MenuGui 공용 스타일).
+// 게임 시작 → 로비 씬(영구 강화·스킬 선택 → 출전).
+// 메뉴·조작법 모두 정식 UI(`MenuUi`, `ControlsPanel`) — OnGUI 는 더 이상 쓰지 않는다.
 // 조작: ↑↓ 선택, Enter 확인, ESC 뒤로 (설정에서만). 씬에 이 컴포넌트 하나만 두면 됨 — 메뉴 "Greed Bound > 타이틀 씬 생성"
 public class TitleScreen : MonoBehaviour
 {
@@ -25,11 +26,12 @@ public class TitleScreen : MonoBehaviour
 
     private InputAction pauseAction, navigateAction, submitAction;
     private readonly SettingsPanel settings = new SettingsPanel();
-    private readonly ControlsPanel controls = new ControlsPanel();
+    private ControlsPanel controls;
     private bool inSettings, inControls;
     private int cursor;
     private Vector2 lastNavigate;
     private string message;
+    private MenuUi menu;
 
     void Awake()
     {
@@ -44,6 +46,11 @@ public class TitleScreen : MonoBehaviour
     {
         instance = this;
         Time.timeScale = 1f;   // 일시정지 중에 타이틀로 돌아오는 길이 생겨도 멈춘 채로 시작하지 않게
+        if (menu == null) menu = MenuUi.Create("TitleMenu", 200, transform);
+        menu.SetBackground(Background);
+        controls = ControlsPanel.Create(transform, 210);   // 메뉴(200) 위 — 조작법은 메뉴를 덮는다
+        controls.SetBackground(Background);
+        RefreshMenu();
     }
 
     void OnDestroy()
@@ -52,6 +59,12 @@ public class TitleScreen : MonoBehaviour
     }
 
     void Update()
+    {
+        UpdateInput();
+        RefreshMenu();
+    }
+
+    void UpdateInput()
     {
         bool cancel = pauseAction.WasPressedThisFrame();
         Vector2 nav = navigateAction.ReadValue<Vector2>();
@@ -123,40 +136,31 @@ public class TitleScreen : MonoBehaviour
 #endif
     }
 
-    void OnGUI()
+    // 메뉴 내용은 값이 바뀔 때만 밀어 넣으면 된다 (매 프레임 다시 그리지 않음)
+    void RefreshMenu()
     {
-        float width = MenuGui.Begin(out Matrix4x4 previous);
-        MenuGui.Fill(width, 1080f, Background);
+        if (menu == null) return;
+        menu.SetVisible(!inControls);
+        if (controls != null) controls.SetVisible(inControls);
+        if (inControls) return;
 
-        if (inControls) controls.Draw(width);
-        else if (inSettings) DrawSettings(width);
-        else DrawMain(width);
-
-        if (!string.IsNullOrEmpty(message)) GUI.Label(new Rect(0, 1000f, width, 40f), message, MenuGui.HintStyle);
-        MenuGui.End(previous);
-    }
-
-    void DrawMain(float width)
-    {
-        GUI.Label(new Rect(0, 210f, width, 100f), titleText, MenuGui.TitleStyle);
-        GUI.Label(new Rect(0, 310f, width, 40f), subtitleText, MenuGui.SubtitleStyle);
-
-        for (int i = 0; i < Items.Length; i++) MenuGui.DrawItem(width, 470f + i * 66f, i == cursor, Items[i]);
-
-        GUI.Label(new Rect(0, 820f, width, 40f), "↑↓ 선택   Enter 확인", MenuGui.HintStyle);
-
-        // 저장된 기록 (첫 실행이면 비어 있음)
-        string record = MetaProgress.Runs > 0
-            ? $"영혼 {MetaProgress.Souls}   ·   최고 라운드 {MetaProgress.BestRound}   ·   도전 {MetaProgress.Runs}회"
-            : "첫 도전";
-        GUI.Label(new Rect(0, 900f, width, 40f), record, MenuGui.HintStyle);
-    }
-
-    void DrawSettings(float width)
-    {
-        GUI.Label(new Rect(0, 200f, width, 90f), "설정", MenuGui.TitleStyle);
-        string[] items = settings.Items();
-        for (int i = 0; i < items.Length; i++) MenuGui.DrawItem(width, 330f + i * 64f, i == settings.Cursor, items[i]);
-        GUI.Label(new Rect(0, 810f, width, 40f), "↑↓ 선택   ←→ 변경   Enter 확인   ESC 돌아가기 (화면 설정은 취소)", MenuGui.HintStyle);
+        if (inSettings)
+        {
+            menu.SetTitle("설정");
+            menu.SetItems(settings.Items(), settings.Cursor, 110f);
+            menu.SetHint("↑↓ 선택   ←→ 변경   Enter 확인   ESC 돌아가기 (화면 설정은 취소)");
+            menu.SetRecord("");
+        }
+        else
+        {
+            menu.SetTitle(titleText, subtitleText);
+            menu.SetItems(Items, cursor, 157f);
+            menu.SetHint("↑↓ 선택   Enter 확인");
+            // 저장된 기록 (첫 실행이면 비어 있음)
+            menu.SetRecord(MetaProgress.Runs > 0
+                ? $"영혼 {MetaProgress.Souls}   ·   최고 라운드 {MetaProgress.BestRound}   ·   도전 {MetaProgress.Runs}회"
+                : "첫 도전");
+        }
+        menu.SetMessage(message);
     }
 }

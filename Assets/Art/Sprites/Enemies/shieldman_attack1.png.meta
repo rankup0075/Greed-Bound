@@ -277,28 +277,6 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: shieldman_attack1_7
-      rect:
-        serializedVersion: 2
-        x: 1050
-        y: 0
-        width: 150
-        height: 62
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d45c223f63d540020800000000000000
-      internalID: 2307071399709295949
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -320,7 +298,6 @@ TextureImporter:
       shieldman_attack1_4: -8828882020272253651
       shieldman_attack1_5: 3620791305372082942
       shieldman_attack1_6: -3566059032610944478
-      shieldman_attack1_7: 2307071399709295949
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

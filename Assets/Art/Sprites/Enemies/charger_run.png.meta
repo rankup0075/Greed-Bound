@@ -120,8 +120,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,10 +140,10 @@ TextureImporter:
       name: charger_run_1
       rect:
         serializedVersion: 2
-        x: 136
+        x: 158
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -162,10 +162,10 @@ TextureImporter:
       name: charger_run_2
       rect:
         serializedVersion: 2
-        x: 272
+        x: 316
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -184,10 +184,10 @@ TextureImporter:
       name: charger_run_3
       rect:
         serializedVersion: 2
-        x: 408
+        x: 474
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -206,10 +206,10 @@ TextureImporter:
       name: charger_run_4
       rect:
         serializedVersion: 2
-        x: 544
+        x: 632
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -228,10 +228,10 @@ TextureImporter:
       name: charger_run_5
       rect:
         serializedVersion: 2
-        x: 680
+        x: 790
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -242,6 +242,50 @@ TextureImporter:
       bones: []
       spriteID: 3060be0123244c820800000000000000
       internalID: 2937545639752041987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charger_run_6
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 0
+        width: 158
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05a4fe3045de6784289874df4caa4c0f
+      internalID: -555370310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charger_run_7
+      rect:
+        serializedVersion: 2
+        x: 1106
+        y: 0
+        width: 158
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05d0c4025ca5ce04b9761598845f5ca5
+      internalID: -1314013686
       vertices: []
       indices: 
       edges: []
@@ -266,6 +310,8 @@ TextureImporter:
       charger_run_3: -7022120324448086370
       charger_run_4: 7958721419681741537
       charger_run_5: 2937545639752041987
+      charger_run_6: -555370310
+      charger_run_7: -1314013686
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

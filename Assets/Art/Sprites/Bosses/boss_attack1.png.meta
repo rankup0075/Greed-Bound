@@ -117,8 +117,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,10 +137,10 @@ TextureImporter:
       name: boss_attack1_1
       rect:
         serializedVersion: 2
-        x: 116
+        x: 154
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,10 +159,10 @@ TextureImporter:
       name: boss_attack1_2
       rect:
         serializedVersion: 2
-        x: 232
+        x: 308
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,10 +181,10 @@ TextureImporter:
       name: boss_attack1_3
       rect:
         serializedVersion: 2
-        x: 348
+        x: 462
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,28 +195,6 @@ TextureImporter:
       bones: []
       spriteID: 5b4fb383e38d55f50800000000000000
       internalID: 6869634568366585013
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: boss_attack1_4
-      rect:
-        serializedVersion: 2
-        x: 464
-        y: 0
-        width: 116
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c8152f88fabbc30a0800000000000000
-      internalID: -6900434166447189620
       vertices: []
       indices: 
       edges: []
@@ -239,7 +217,6 @@ TextureImporter:
       boss_attack1_1: -1421564751784129543
       boss_attack1_2: -2239186497799926970
       boss_attack1_3: 6869634568366585013
-      boss_attack1_4: -6900434166447189620
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

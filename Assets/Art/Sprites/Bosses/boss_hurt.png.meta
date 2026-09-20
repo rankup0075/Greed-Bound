@@ -114,8 +114,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,10 +134,10 @@ TextureImporter:
       name: boss_hurt_1
       rect:
         serializedVersion: 2
-        x: 116
+        x: 154
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,10 +156,10 @@ TextureImporter:
       name: boss_hurt_2
       rect:
         serializedVersion: 2
-        x: 232
+        x: 308
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,32 +178,10 @@ TextureImporter:
       name: boss_hurt_3
       rect:
         serializedVersion: 2
-        x: 348
+        x: 462
         y: 0
-        width: 116
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 67b5c7467d7292b00800000000000000
-      internalID: 804217814519667574
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: boss_hurt_4
-      rect:
-        serializedVersion: 2
-        x: 464
-        y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -212,8 +190,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 94dd42b4d2044554eadbac1743ead943
-      internalID: 1460565162
+      spriteID: c17fd489451d49848b64ecc57f00911c
+      internalID: -1014956265
       vertices: []
       indices: 
       edges: []
@@ -235,8 +213,7 @@ TextureImporter:
       boss_hurt_0: 4915618728786046271
       boss_hurt_1: -1034657410947428817
       boss_hurt_2: 2227844474254104988
-      boss_hurt_3: 804217814519667574
-      boss_hurt_4: 1460565162
+      boss_hurt_3: -1014956265
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

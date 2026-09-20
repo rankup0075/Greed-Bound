@@ -16,6 +16,28 @@ public static class BattleArenaBuilder
     internal static readonly Color GroundColor = new Color(0.25f, 0.22f, 0.28f);
     internal static readonly Color PlatformColor = new Color(0.48f, 0.42f, 0.36f);
 
+    // 배경·지형 그림 (AI_Source/tools/build_environment.py 가 만든다. 없으면 예전처럼 색 사각형)
+    const string EnvFolder = "Assets/Art/Sprites/Environment";
+    // 배경 층: 파일 이름, 카메라 따라가는 비율, 화면 깊이, 세로 중심, 세로 높이(0 = 그림 높이 그대로), 밝기.
+    // bg_far 는 세로로도 이음매가 없어 화면 위아래를 넘기도록 늘린다.
+    // bg_walls 는 위아래를 이으면 자국이 보여 원래 높이 그대로 둔다 (남는 곳은 bg_far 가 채움).
+    // 먼 층일수록 어둡게 — 원본대로 두면 먼 배경이 더 밝아 깊이감이 뒤집힌다.
+    static readonly (string file, float follow, int order, float y, float height, float shade)[] BackgroundLayers =
+    {
+        ("bg_far",   0.85f, -40, 4f, 13f, 0.62f),
+        ("bg_walls", 0.55f, -30, 4f,  0f, 0.85f),
+    };
+
+    // 로비·상점·튜토리얼(청록 성 내부). 이 씬들은 카메라가 더 넓다 — 세로 15u (UseWideView).
+    // 그림 높이가 8.4u 뿐이라 화면을 한 장으로 못 덮는데, **세로로 이어 붙이면 안 된다** —
+    // 같은 창문이 위아래로 두 번 보여 건물이 이상해진다(2026-09-20 사용자 보고).
+    // 그래서 위쪽은 **무늬 없는 단색**으로 메우고, 창문은 눈높이에 한 줄만 둔다.
+    internal static readonly (string file, float follow, int order, float y, float height, float shade)[] HallBackgroundLayers =
+    {
+        ("hall_fill", 1f,    -45, 6.4f, 17f, 1f),   // 단색 — 배경 맨 윗줄과 같은 색이라 경계가 안 보인다
+        ("hall_bg",   0.72f, -40, 3.1f,  0f, 1f),   // 창문·기둥 한 줄
+    };
+
     // 이전 테스트용으로 만든 오브젝트들 — 새 맵으로 교체
     static readonly string[] ReplacedObjectNames = { "BattleArena", "Ground", "Platform_A", "Platform_B", "Platform_C" };
 
@@ -50,11 +72,14 @@ public static class BattleArenaBuilder
         GameObject root = new GameObject("BattleArena");
         Undo.RegisterCreatedObjectUndo(root, "전투 맵 생성");
 
+        CreateBackground(root.transform, ArenaLayout.MapHalfWidth, BackgroundLayers);
+
         // 지면: 윗면 y = GroundTop, 두께 2, 맵보다 양쪽으로 2씩 넓게
-        GameObject ground = CreateBlock(root.transform, "Ground", square, GroundColor,
-            new Vector2(0f, ArenaLayout.GroundTop - 1f), new Vector2(ArenaLayout.MapHalfWidth * 2f + 4f, 2f));
-        Undo.AddComponent<BoxCollider2D>(ground);
-        ground.GetComponent<SpriteRenderer>().sortingOrder = -10;
+        Vector2 groundSize = new Vector2(ArenaLayout.MapHalfWidth * 2f + 4f, 2f);
+        GameObject ground = CreateTerrain(root.transform, "Ground", square, GroundColor, "ground",
+            new Vector2(0f, ArenaLayout.GroundTop - 1f), groundSize, groundSize, -10);
+        BoxCollider2D groundBox = Undo.AddComponent<BoxCollider2D>(ground);
+        groundBox.size = groundSize;
 
         // 보이지 않는 양끝 벽
         CreateWall(root.transform, "Wall_Left", -ArenaLayout.MapHalfWidth - WallThickness * 0.5f);
@@ -64,11 +89,14 @@ public static class BattleArenaBuilder
         for (int i = 0; i < ArenaLayout.Platforms.Length; i++)
         {
             ArenaLayout.PlatformSpec spec = ArenaLayout.Platforms[i];
-            GameObject platform = CreateBlock(root.transform, $"Platform_{i + 1}", square, PlatformColor,
-                new Vector2(spec.x, spec.top - ArenaLayout.PlatformThickness * 0.5f),
-                new Vector2(spec.width, ArenaLayout.PlatformThickness));
+            Vector2 hit = new Vector2(spec.width, ArenaLayout.PlatformThickness);
+            // 그림은 판정보다 조금 두껍다(타일 한 칸 = 0.5u). **윗면을 맞추고 아래로 넘치게** 둔다 —
+            // 판정을 그림에 맞춰 두껍게 하면 발판 아래 통과 높이가 줄어 보스가 끼기 시작한다
+            Vector2 art = new Vector2(spec.width, PlatformArtHeight);
+            GameObject platform = CreateTerrain(root.transform, $"Platform_{i + 1}", square, PlatformColor, "platform",
+                new Vector2(spec.x, spec.top - ArenaLayout.PlatformThickness * 0.5f), hit, art, -5);
             Undo.AddComponent<OneWayPlatform>(platform);  // BoxCollider2D·PlatformEffector2D 자동 추가
-            platform.GetComponent<SpriteRenderer>().sortingOrder = -5;
+            if (platform.TryGetComponent(out BoxCollider2D platformBox)) platformBox.size = hit;
         }
 
         List<string> notes = new List<string>();
@@ -213,6 +241,101 @@ public static class BattleArenaBuilder
             if (enemy != null) return enemy;
         }
         return null;
+    }
+
+    // 발판 그림 한 칸 높이 (platform.png 18px ÷ PPU 36)
+    const float PlatformArtHeight = 0.5f;
+
+    // 배경·지형 그림을 불러오면서 임포트 설정을 확인한다.
+    // SpriteRenderer 의 Tiled 모드는 메시가 **Full Rect** 여야 동작한다 — Tight 면 그림이
+    // 반복되지 않고 늘어나거나 깨진다. 이 프로젝트 스프라이트는 전부 Tight 로 들어와 있어서
+    // (임포트 규칙의 설정이 먹지 않았음) 여기서 고쳐 준다.
+    static Sprite LoadEnv(string file)
+    {
+        string path = $"{EnvFolder}/{file}.png";
+        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        if (sprite == null) return null;
+
+        if (AssetImporter.GetAtPath(path) is TextureImporter importer)
+        {
+            TextureImporterSettings settings = new TextureImporterSettings();
+            importer.ReadTextureSettings(settings);
+            if (settings.spriteMeshType != SpriteMeshType.FullRect)
+            {
+                settings.spriteMeshType = SpriteMeshType.FullRect;
+                importer.SetTextureSettings(settings);
+                importer.SaveAndReimport();
+                sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            }
+        }
+        return sprite;
+    }
+
+    // 지형 한 덩이. 루트는 판정만(스케일 1), 그림은 자식 "Art" 가 그린다.
+    // 그림이 판정보다 두꺼울 수 있으므로 **윗면을 맞추고** 남는 만큼 아래로 넘치게 둔다.
+    internal static GameObject CreateTerrain(Transform parent, string name, Sprite fallback, Color fallbackColor,
+                                    string envFile, Vector2 center, Vector2 hit, Vector2 art, int sortingOrder)
+    {
+        GameObject go = new GameObject(name);
+        Undo.RegisterCreatedObjectUndo(go, "전투 맵 생성");
+        go.transform.SetParent(parent, false);
+        go.transform.position = center;
+
+        GameObject visual = new GameObject("Art");
+        visual.transform.SetParent(go.transform, false);
+        visual.transform.localPosition = new Vector3(0f, hit.y * 0.5f - art.y * 0.5f, 0f);
+
+        SpriteRenderer renderer = visual.AddComponent<SpriteRenderer>();
+        renderer.sortingOrder = sortingOrder;
+
+        Sprite env = LoadEnv(envFile);
+        if (env != null)
+        {
+            renderer.sprite = env;
+            renderer.drawMode = SpriteDrawMode.Tiled;
+            renderer.tileMode = SpriteTileMode.Continuous;
+            renderer.size = art;
+        }
+        else
+        {
+            // 그림이 아직 없으면 예전처럼 색 사각형을 늘려 쓴다
+            renderer.sprite = fallback;
+            renderer.color = fallbackColor;
+            visual.transform.localScale = new Vector3(art.x, art.y, 1f);
+        }
+        return go;
+    }
+
+    // 패럴랙스 배경. 층마다 카메라를 다른 비율로 따라가 깊이감을 만든다.
+    internal static void CreateBackground(Transform parent, float halfWidth,
+        (string file, float follow, int order, float y, float height, float shade)[] layers)
+    {
+        GameObject root = new GameObject("Background");
+        Undo.RegisterCreatedObjectUndo(root, "전투 맵 생성");
+        root.transform.SetParent(parent, false);
+
+        float width = halfWidth * 2f + 16f;   // 카메라가 끝까지 가도 비지 않게 여유
+        foreach ((string file, float follow, int order, float y, float height, float shade) in layers)
+        {
+            Sprite sprite = LoadEnv(file);
+            if (sprite == null) continue;
+
+            GameObject layer = new GameObject($"{file}_{-order}");
+            Undo.RegisterCreatedObjectUndo(layer, "전투 맵 생성");
+            layer.transform.SetParent(root.transform, false);
+
+            SpriteRenderer renderer = layer.AddComponent<SpriteRenderer>();
+            renderer.sprite = sprite;
+            renderer.drawMode = SpriteDrawMode.Tiled;
+            renderer.tileMode = SpriteTileMode.Continuous;
+            renderer.size = new Vector2(width, height > 0f ? height : sprite.bounds.size.y);
+            renderer.color = new Color(shade, shade, shade, 1f);
+            renderer.sortingOrder = order;
+
+            ParallaxLayer parallax = layer.AddComponent<ParallaxLayer>();
+            parallax.follow = follow;
+            parallax.SetOrigin(new Vector3(0f, y, 0f));
+        }
     }
 
     internal static GameObject CreateBlock(Transform parent, string name, Sprite sprite, Color color, Vector2 center, Vector2 size)

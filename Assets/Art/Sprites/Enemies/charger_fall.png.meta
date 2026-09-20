@@ -108,8 +108,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,10 +128,10 @@ TextureImporter:
       name: charger_fall_1
       rect:
         serializedVersion: 2
-        x: 136
+        x: 158
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -142,6 +142,28 @@ TextureImporter:
       bones: []
       spriteID: e2ab0e2ff38015620800000000000000
       internalID: 2760997117305600558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charger_fall_2
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 0
+        width: 158
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 861909ec4c4e4c74189582caac4642d2
+      internalID: -2054923853
       vertices: []
       indices: 
       edges: []
@@ -162,6 +184,7 @@ TextureImporter:
     nameFileIdTable:
       charger_fall_0: 6206453497096834123
       charger_fall_1: 2760997117305600558
+      charger_fall_2: -2054923853
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

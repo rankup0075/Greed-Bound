@@ -174,28 +174,6 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: soldier_attack1_3
-      rect:
-        serializedVersion: 2
-        x: 450
-        y: 0
-        width: 150
-        height: 77
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 673f49750fa5bd8c0800000000000000
-      internalID: -3973482257916300426
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -213,7 +191,6 @@ TextureImporter:
       soldier_attack1_0: 6577106534909485444
       soldier_attack1_1: -8242520645593354310
       soldier_attack1_2: 5293969038915522358
-      soldier_attack1_3: -3973482257916300426
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

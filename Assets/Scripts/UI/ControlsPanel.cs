@@ -1,14 +1,26 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 // 조작법 화면 (Spec 9장 "튜토리얼·조작 안내 — Unity 구현 규칙").
-// 타이틀(TitleScreen)과 일시정지(PauseMenu)가 같은 화면을 쓰도록 분리한 부분. 임시 UI(OnGUI, MenuGui 1080p 좌표).
+// 타이틀(TitleScreen)과 일시정지(PauseMenu)가 같은 화면을 쓰도록 분리한 부분.
+// 정식 UI(`PixelUi`, 640×360 좌표) — **한 번 만들고 켜고 끄기만 한다.**
+//
 // 내용은 Spec 5장 "키 배치"와 같은 순서 — 키가 늘거나 바뀌면 아래 표만 고치면 된다.
-public class ControlsPanel
+public class ControlsPanel : MonoBehaviour
 {
-    const float KeyWidth = 190f;     // 키 이름 칸 (오른쪽 정렬) — "Left Shift"가 들어가는 폭
-    const float Gap = 24f;           // 키와 설명 사이
-    const float RowHeight = 50f;
-    const float GroupGap = 34f;      // 묶음 사이 여백
+    // 칸 나누기 — 전부 640×360 기준 (옛 OnGUI 판의 1080 기준 수치를 3으로 나눈 값)
+    const float BlockWidth = 520f;          // 표 전체 폭
+    const float ColumnWidth = 247f;         // 한 칸 폭
+    const float KeyWidth = 63f;             // 키 이름 칸 (오른쪽 정렬) — "Left Shift"가 들어가는 폭
+    const float Gap = 8f;                   // 키와 설명 사이
+    const float RowHeight = 17f;
+    const float GroupHeadHeight = 18f;      // 묶음 제목이 차지하는 높이
+    const float GroupGap = 11f;             // 묶음 사이 여백
+    const float GroupsY = 93f;              // 묶음이 시작하는 y
+    const float RulesY = 284f;         // 왼쪽 칸(이동+전투)이 276 에서 끝난다 — 그 아래
+    const float RuleStep = 13f;
+
+    const int TitleSize = 21, GroupSize = 11, RowSize = 10, HintSize = 8;
 
     static readonly Color GroupColor = new Color(1f, 0.85f, 0.35f);
     static readonly Color KeyColor = new Color(1f, 1f, 1f);
@@ -48,60 +60,78 @@ public class ControlsPanel
         "적의 공격에는 항상 예고가 있습니다 — 붉게 멈추면 사거리 밖으로",
     };
 
-    static GUIStyle keyStyle, descStyle, groupStyle;
+    private RectTransform root;
+    private Image background;
 
-    static void Ensure()
+    // 주인(타이틀·일시정지) 밑에 매단다. 일시정지는 DontDestroyOnLoad 라 부모가 꼭 필요하다
+    // — 루트로 두면 씬이 바뀔 때 캔버스만 파괴된다 (MenuUi 와 같은 이유)
+    public static ControlsPanel Create(Transform parent, int sortingOrder)
     {
-        if (keyStyle != null) return;
-        MenuGui.Ensure();
-        keyStyle = new GUIStyle(MenuGui.ItemStyle) { fontSize = 30, alignment = TextAnchor.MiddleRight };
-        descStyle = new GUIStyle(MenuGui.ItemStyle) { fontSize = 30, alignment = TextAnchor.MiddleLeft };
-        groupStyle = new GUIStyle(MenuGui.ItemStyle) { fontSize = 32, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
+        RectTransform canvas = PixelUi.CreateCanvas(parent, "ControlsPanel", sortingOrder);
+        ControlsPanel panel = canvas.gameObject.AddComponent<ControlsPanel>();
+        panel.Build(canvas);
+        panel.SetVisible(false);
+        return panel;
+    }
+
+    void Build(RectTransform canvas)
+    {
+        root = canvas;
+        background = PixelUi.MakeImage(root, "Background", new Color(0.06f, 0.05f, 0.09f));
+        PixelUi.Stretch(background.rectTransform);
+
+        PixelUi.Label(root, new Vector2(0f, -43f), new Vector2(PixelUi.RefWidth, 30f),
+            TitleSize, TextAnchor.MiddleCenter, bold: true).text = "조작법";
+
+        // 왼쪽 칸: 이동 + 전투 / 오른쪽 칸: 그 외
+        float left = (PixelUi.RefWidth - BlockWidth) * 0.5f;
+        float right = left + BlockWidth - ColumnWidth;
+
+        float y = Group(left, GroupsY, "이동", MoveKeys);
+        Group(left, y + GroupGap, "전투", CombatKeys);
+        Group(right, GroupsY, "그 외", SystemKeys);
+
+        for (int i = 0; i < Rules.Length; i++)
+            PixelUi.Label(root, new Vector2(0f, -(RulesY + i * RuleStep)), new Vector2(PixelUi.RefWidth, RuleStep),
+                HintSize, TextAnchor.MiddleCenter).text = Rules[i];
+
+        PixelUi.Label(root, new Vector2(0f, -327f), new Vector2(PixelUi.RefWidth, RuleStep),
+            HintSize, TextAnchor.MiddleCenter).text = "Enter 또는 ESC 로 돌아가기";
+    }
+
+    // 묶음 하나를 만들고 다음 y를 돌려줌
+    float Group(float x, float y, string title, string[,] keys)
+    {
+        Text head = PixelUi.Label(root, new Vector2(x, -y), new Vector2(ColumnWidth, GroupHeadHeight),
+            GroupSize, TextAnchor.MiddleLeft, bold: true);
+        head.text = title;
+        head.color = GroupColor;
+        y += GroupHeadHeight;
+
+        for (int i = 0; i < keys.GetLength(0); i++)
+        {
+            Text key = PixelUi.Label(root, new Vector2(x, -y), new Vector2(KeyWidth, RowHeight),
+                RowSize, TextAnchor.MiddleRight);
+            key.text = keys[i, 0];
+            key.color = KeyColor;
+
+            Text desc = PixelUi.Label(root, new Vector2(x + KeyWidth + Gap, -y),
+                new Vector2(ColumnWidth - KeyWidth - Gap, RowHeight), RowSize, TextAnchor.MiddleLeft);
+            desc.text = keys[i, 1];
+            desc.color = DescColor;
+            y += RowHeight;
+        }
+        return y;
+    }
+
+    // 타이틀은 불투명한 배경, 일시정지는 게임 화면이 살짝 비치는 어둡기
+    public void SetBackground(Color color) => background.color = color;
+
+    public void SetVisible(bool on)
+    {
+        if (root != null) root.gameObject.SetActive(on);
     }
 
     // ESC·Enter로 닫음. 닫아야 하면 false
     public bool HandleInput(bool cancel, bool submit) => !cancel && !submit;
-
-    public void Draw(float width)
-    {
-        Ensure();
-        GUI.Label(new Rect(0, 130f, width, 90f), "조작법", MenuGui.TitleStyle);
-
-        // 왼쪽 칸: 이동 + 전투 / 오른쪽 칸: 그 외
-        float blockWidth = Mathf.Min(width - 160f, 1560f);
-        float left = (width - blockWidth) * 0.5f;
-        float columnWidth = blockWidth * 0.5f - 40f;
-        float right = left + blockWidth * 0.5f + 40f;
-
-        float y = Group(left, 280f, columnWidth, "이동", MoveKeys);
-        Group(left, y + GroupGap, columnWidth, "전투", CombatKeys);
-        Group(right, 280f, columnWidth, "그 외", SystemKeys);
-
-        for (int i = 0; i < Rules.Length; i++)
-            GUI.Label(new Rect(0, 830f + i * 40f, width, 40f), Rules[i], MenuGui.HintStyle);
-
-        GUI.Label(new Rect(0, 980f, width, 40f), "Enter 또는 ESC 로 돌아가기", MenuGui.HintStyle);
-    }
-
-    // 묶음 하나를 그리고 다음 y를 돌려줌
-    static float Group(float x, float y, float width, string title, string[,] keys)
-    {
-        Color old = GUI.color;
-
-        GUI.color = GroupColor;
-        GUI.Label(new Rect(x, y, width, 44f), title, groupStyle);
-        y += 54f;
-
-        for (int i = 0; i < keys.GetLength(0); i++)
-        {
-            GUI.color = KeyColor;
-            GUI.Label(new Rect(x, y, KeyWidth, RowHeight), keys[i, 0], keyStyle);
-            GUI.color = DescColor;
-            GUI.Label(new Rect(x + KeyWidth + Gap, y, width - KeyWidth - Gap, RowHeight), keys[i, 1], descStyle);
-            y += RowHeight;
-        }
-
-        GUI.color = old;
-        return y;
-    }
 }

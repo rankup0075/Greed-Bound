@@ -126,7 +126,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -146,9 +146,9 @@ TextureImporter:
       name: elite_run_1
       rect:
         serializedVersion: 2
-        x: 158
+        x: 162
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -168,9 +168,9 @@ TextureImporter:
       name: elite_run_2
       rect:
         serializedVersion: 2
-        x: 316
+        x: 324
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -190,9 +190,9 @@ TextureImporter:
       name: elite_run_3
       rect:
         serializedVersion: 2
-        x: 474
+        x: 486
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -212,9 +212,9 @@ TextureImporter:
       name: elite_run_4
       rect:
         serializedVersion: 2
-        x: 632
+        x: 648
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -234,9 +234,9 @@ TextureImporter:
       name: elite_run_5
       rect:
         serializedVersion: 2
-        x: 790
+        x: 810
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -256,9 +256,9 @@ TextureImporter:
       name: elite_run_6
       rect:
         serializedVersion: 2
-        x: 948
+        x: 972
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -278,9 +278,9 @@ TextureImporter:
       name: elite_run_7
       rect:
         serializedVersion: 2
-        x: 1106
+        x: 1134
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}

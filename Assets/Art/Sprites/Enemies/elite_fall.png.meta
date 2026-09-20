@@ -111,7 +111,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -131,9 +131,9 @@ TextureImporter:
       name: elite_fall_1
       rect:
         serializedVersion: 2
-        x: 158
+        x: 162
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -145,28 +145,6 @@ TextureImporter:
       bones: []
       spriteID: 2d318ca90c18a7f70800000000000000
       internalID: 9185797054206055378
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_fall_2
-      rect:
-        serializedVersion: 2
-        x: 316
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cc569ba4ddcd7d7c0800000000000000
-      internalID: -4046522897169553972
       vertices: []
       indices: 
       edges: []
@@ -187,7 +165,6 @@ TextureImporter:
     nameFileIdTable:
       elite_fall_0: -9032932666276612488
       elite_fall_1: 9185797054206055378
-      elite_fall_2: -4046522897169553972
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

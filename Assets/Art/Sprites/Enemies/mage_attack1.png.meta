@@ -216,8 +216,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,10 +236,10 @@ TextureImporter:
       name: mage_attack1_1
       rect:
         serializedVersion: 2
-        x: 240
+        x: 138
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,10 +258,10 @@ TextureImporter:
       name: mage_attack1_2
       rect:
         serializedVersion: 2
-        x: 480
+        x: 276
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -280,10 +280,10 @@ TextureImporter:
       name: mage_attack1_3
       rect:
         serializedVersion: 2
-        x: 720
+        x: 414
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -302,10 +302,10 @@ TextureImporter:
       name: mage_attack1_4
       rect:
         serializedVersion: 2
-        x: 960
+        x: 552
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -324,10 +324,10 @@ TextureImporter:
       name: mage_attack1_5
       rect:
         serializedVersion: 2
-        x: 1200
+        x: 690
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -346,10 +346,10 @@ TextureImporter:
       name: mage_attack1_6
       rect:
         serializedVersion: 2
-        x: 1440
+        x: 828
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -368,10 +368,10 @@ TextureImporter:
       name: mage_attack1_7
       rect:
         serializedVersion: 2
-        x: 1680
+        x: 966
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -382,6 +382,28 @@ TextureImporter:
       bones: []
       spriteID: c39c9dd9fbf36c960800000000000000
       internalID: 7621849511590742332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mage_attack1_8
+      rect:
+        serializedVersion: 2
+        x: 1104
+        y: 0
+        width: 138
+        height: 69
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08a7632882f8cf34fae1733139112624
+      internalID: -582350616
       vertices: []
       indices: 
       edges: []
@@ -408,6 +430,7 @@ TextureImporter:
       mage_attack1_5: -3416697777644134381
       mage_attack1_6: 2101298772482880868
       mage_attack1_7: 7621849511590742332
+      mage_attack1_8: -582350616
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

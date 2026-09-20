@@ -114,8 +114,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,10 +134,10 @@ TextureImporter:
       name: mage_fall_1
       rect:
         serializedVersion: 2
-        x: 240
+        x: 138
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -148,6 +148,28 @@ TextureImporter:
       bones: []
       spriteID: 256df2a175e82e190800000000000000
       internalID: -7934623088720751022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mage_fall_2
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 0
+        width: 138
+        height: 69
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f490f01bd578f14296fd9997e2ef757
+      internalID: -855937602
       vertices: []
       indices: 
       edges: []
@@ -168,6 +190,7 @@ TextureImporter:
     nameFileIdTable:
       mage_fall_0: -8013515594206464878
       mage_fall_1: -7934623088720751022
+      mage_fall_2: -855937602
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

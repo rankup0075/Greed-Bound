@@ -129,8 +129,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -149,10 +149,10 @@ TextureImporter:
       name: charger_death_1
       rect:
         serializedVersion: 2
-        x: 136
+        x: 158
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,10 +171,10 @@ TextureImporter:
       name: charger_death_2
       rect:
         serializedVersion: 2
-        x: 272
+        x: 316
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -193,10 +193,10 @@ TextureImporter:
       name: charger_death_3
       rect:
         serializedVersion: 2
-        x: 408
+        x: 474
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -215,10 +215,10 @@ TextureImporter:
       name: charger_death_4
       rect:
         serializedVersion: 2
-        x: 544
+        x: 632
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -237,10 +237,10 @@ TextureImporter:
       name: charger_death_5
       rect:
         serializedVersion: 2
-        x: 680
+        x: 790
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -259,10 +259,10 @@ TextureImporter:
       name: charger_death_6
       rect:
         serializedVersion: 2
-        x: 816
+        x: 948
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -273,50 +273,6 @@ TextureImporter:
       bones: []
       spriteID: aee3fff011901a320800000000000000
       internalID: 2567343231465373418
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: charger_death_7
-      rect:
-        serializedVersion: 2
-        x: 952
-        y: 0
-        width: 136
-        height: 75
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 637c6638ab903d080800000000000000
-      internalID: -9163970120095709386
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: charger_death_8
-      rect:
-        serializedVersion: 2
-        x: 1088
-        y: 0
-        width: 136
-        height: 75
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 83a4640cf03dc64c0800000000000000
-      internalID: -4292824280187123144
       vertices: []
       indices: 
       edges: []
@@ -342,8 +298,6 @@ TextureImporter:
       charger_death_4: 4574888938214530807
       charger_death_5: -2955466386499962061
       charger_death_6: 2567343231465373418
-      charger_death_7: -9163970120095709386
-      charger_death_8: -4292824280187123144
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

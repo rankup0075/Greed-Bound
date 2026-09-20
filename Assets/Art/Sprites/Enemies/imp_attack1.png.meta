@@ -274,28 +274,6 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: imp_attack1_7
-      rect:
-        serializedVersion: 2
-        x: 644
-        y: 0
-        width: 92
-        height: 49
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 80114346bb92bee10800000000000000
-      internalID: 2227920325481599240
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -317,7 +295,6 @@ TextureImporter:
       imp_attack1_4: -9198124254017898683
       imp_attack1_5: 7842666082019593201
       imp_attack1_6: 2821112052195276836
-      imp_attack1_7: 2227920325481599240
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

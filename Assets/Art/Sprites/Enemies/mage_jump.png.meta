@@ -117,8 +117,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,10 +137,10 @@ TextureImporter:
       name: mage_jump_1
       rect:
         serializedVersion: 2
-        x: 240
+        x: 138
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,6 +151,28 @@ TextureImporter:
       bones: []
       spriteID: fc76b2d4860a14480800000000000000
       internalID: -8916669417385138225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mage_jump_2
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 0
+        width: 138
+        height: 69
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 305aa6bbc856df34c8dfcedbe7e56acf
+      internalID: 511817529
       vertices: []
       indices: 
       edges: []
@@ -171,6 +193,7 @@ TextureImporter:
     nameFileIdTable:
       mage_jump_0: 8853813110698650801
       mage_jump_1: -8916669417385138225
+      mage_jump_2: 511817529
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

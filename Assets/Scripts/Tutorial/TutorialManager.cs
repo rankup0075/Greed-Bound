@@ -242,6 +242,10 @@ public class TutorialManager : MonoBehaviour
 
     void OnGUI()
     {
+        // 일시정지 중에는 그리지 않는다. OnGUI(임시 UI)는 **정식 UI 캔버스 위에** 그려지기 때문에
+        // 그대로 두면 월드 이름표·말풍선이 일시정지 메뉴를 가린다 (2026-09-20 사용자 보고).
+        // 예전에는 일시정지도 OnGUI 라 GUI.depth 로 눌렀지만 이제는 캔버스라 그 방법을 못 쓴다
+        if (PauseMenu.IsOpen) return;
         if (player == null) return;
         Camera cam = Camera.main;
         if (cam == null) return;

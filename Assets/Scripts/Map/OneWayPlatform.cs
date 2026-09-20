@@ -30,7 +30,9 @@ public class OneWayPlatform : MonoBehaviour
     void Awake()
     {
         Configure();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        // 그림은 자식 "Art" 에 있다 (지형 타일을 Tiled 모드로 그리려고 판정과 분리했음).
+        // GetComponent 로만 찾으면 붕괴 예고 깜빡임·반투명이 통째로 안 보인다
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (spriteRenderer != null) baseColor = spriteRenderer.color;
     }
 

@@ -123,8 +123,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -143,10 +143,10 @@ TextureImporter:
       name: boss_death_1
       rect:
         serializedVersion: 2
-        x: 116
+        x: 154
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -165,10 +165,10 @@ TextureImporter:
       name: boss_death_2
       rect:
         serializedVersion: 2
-        x: 232
+        x: 308
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,10 +187,10 @@ TextureImporter:
       name: boss_death_3
       rect:
         serializedVersion: 2
-        x: 348
+        x: 462
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,10 +209,10 @@ TextureImporter:
       name: boss_death_4
       rect:
         serializedVersion: 2
-        x: 464
+        x: 616
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -231,10 +231,10 @@ TextureImporter:
       name: boss_death_5
       rect:
         serializedVersion: 2
-        x: 580
+        x: 770
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -253,10 +253,10 @@ TextureImporter:
       name: boss_death_6
       rect:
         serializedVersion: 2
-        x: 696
+        x: 924
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -275,10 +275,10 @@ TextureImporter:
       name: boss_death_7
       rect:
         serializedVersion: 2
-        x: 812
+        x: 1078
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -287,8 +287,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd7e0f36398639a45a9be141d34e1050
-      internalID: -1478279066
+      spriteID: e85faa38374146c41ad66a282f5df2cd
+      internalID: -51927854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss_death_8
+      rect:
+        serializedVersion: 2
+        x: 1232
+        y: 0
+        width: 154
+        height: 113
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96a753cb51436184ea0d55a1bcd679d0
+      internalID: -1230978467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss_death_9
+      rect:
+        serializedVersion: 2
+        x: 1386
+        y: 0
+        width: 154
+        height: 113
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8bd6be046e7b27f459769d10f667b14f
+      internalID: -837282440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss_death_10
+      rect:
+        serializedVersion: 2
+        x: 1540
+        y: 0
+        width: 154
+        height: 113
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc4d3029a6bc2c242b3fb62999f88f2c
+      internalID: 709992453
       vertices: []
       indices: 
       edges: []
@@ -309,12 +375,15 @@ TextureImporter:
     nameFileIdTable:
       boss_death_0: -4981158973115887420
       boss_death_1: -748363496707455251
+      boss_death_10: 709992453
       boss_death_2: 7909673737743899949
       boss_death_3: 6148148392159336263
       boss_death_4: 8883486424710186617
       boss_death_5: 4024830580348197195
       boss_death_6: -7911559245870580178
-      boss_death_7: -1478279066
+      boss_death_7: -51927854
+      boss_death_8: -1230978467
+      boss_death_9: -837282440
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

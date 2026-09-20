@@ -37,6 +37,10 @@ public class Enemy : MonoBehaviour, IDamageable
     const float StopDistanceRatio = 0.8f;       // 사거리의 80% 안으로는 더 붙지 않음
 
     static readonly Color WindupColor = new Color(1f, 0.2f, 0.15f);
+    // 도트 그림에는 예고 색을 통째로 덮지 않고 섞는다. 곱하기로 덮어 버리면
+    // 캐릭터가 붉은 실루엣 덩어리가 되어 무엇인지 알아볼 수 없다(사용자 보고).
+    // 예고는 방향 삼각형·조준선이 함께 알리므로 이 정도로 충분하다
+    const float PixelArtWindupTint = 0.55f;
     static readonly Color AttackEffectColor = new Color(1f, 0.35f, 0.3f);
     static readonly Color BlockFlashColor = new Color(0.55f, 0.9f, 1f);
     const float HitFlashAmount = 0.85f;         // 피격: 흰색으로 거의 덮음 (윤곽은 살짝 남김)
@@ -118,6 +122,10 @@ public class Enemy : MonoBehaviour, IDamageable
     public bool IsRanged => type == EnemyType.Ranged;
     public bool IsBoss => type == EnemyType.Boss;
     public bool IsGuardBroken => Time.time < guardBrokenUntil;
+    public bool IsWindingUp => state == State.Windup;   // 공격 예고 중 (EnemyAnimation이 봄)
+    public bool IsCharging => state == State.Charge;
+    // 보스와 돌진 중인 적은 밀리지도, 패턴이 끊기지도 않는다 (피격 동작도 재생하지 않음)
+    public bool IsStaggerable => !IsBoss && state != State.Charge;
     public bool IsSplitChild { get; private set; }   // 분열로 생긴 적 — 다시 분열하지 않음
     public int RevivesUsed { get; private set; }     // 죽음의 군세로 부활한 횟수 — 가능 횟수를 다 쓰면 다시 부활하지 않음
     public bool IsRevengeActive => Time.time < revengeUntil;
@@ -154,6 +162,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private Rigidbody2D rb;
     private BoxCollider2D col;
     private CharacterVisual visual;             // 그림(자식 Visual). 루트는 판정만
+    private EnemyAnimation anim;                // 도트 애니메이션 (컨트롤러가 없으면 null인 채로 둔다)
     private SpriteRenderer spriteRenderer;
     private HitFlash hitFlash;                  // 피격 번쩍임 (셰이더가 없으면 곱하기 색으로 대신)
     private GameObject telegraph;               // 예비동작 중 바라보는 방향 표시 삼각형
@@ -169,6 +178,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private Collider2D playerCollider;
 
     private bool initialized;
+    private int attackCycle;                    // 1·2·3타를 돌려 써서 같은 동작만 나오지 않게
     private State state = State.Chase;
     private AttackKind pendingAttack;
     private int facing = 1;
@@ -213,6 +223,7 @@ public class Enemy : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
         visual = CharacterVisual.Ensure(gameObject);
+        anim = GetComponent<EnemyAnimation>() ?? gameObject.AddComponent<EnemyAnimation>();
         spriteRenderer = visual.Renderer;
         hitFlash = HitFlash.Ensure(spriteRenderer);
         rb.gravityScale = gravityScale;
@@ -340,6 +351,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (spriteRenderer != null) spriteRenderer.color = baseColor;
         shieldVisual.transform.localScale = new Vector3(0.14f, 0.9f * size.y, 1f);
         healthBar.Layout(size);
+        anim.Bind(type);   // 종류가 정해진 뒤라야 맞는 컨트롤러를 고를 수 있다
 
         initialized = true;
     }
@@ -422,12 +434,18 @@ public class Enemy : MonoBehaviour, IDamageable
             {
                 // 거리 유지: 5u보다 가까우면 물러나고, 8u보다 멀면 다가감. 발판 추격 없음
                 float distanceX = Mathf.Abs(toPlayer.x);
-                if (distanceX < rangedKeepMin) velocity.x = -facing * speed;
-                else if (distanceX > rangedKeepMax) velocity.x = facing * speed;
+                int awayFromPlayer = toPlayer.x > 0f ? -1 : 1;
+                if (distanceX < rangedKeepMin) velocity.x = awayFromPlayer * speed;
+                else if (distanceX > rangedKeepMax) velocity.x = -awayFromPlayer * speed;
                 else velocity.x = 0f;
+
+                // 자리를 옮기는 동안에는 가는 쪽을 본다 — 플레이어를 본 채 물러나면 뒷걸음질로 보인다.
+                // 멈춰 서거나 쏠 때는 아래에서 다시 플레이어를 본다
+                if (Mathf.Abs(velocity.x) > 0.01f) facing = velocity.x > 0f ? 1 : -1;
 
                 if (grounded && Time.time >= attackReadyTime && toPlayer.sqrMagnitude <= rangedRange * rangedRange)
                 {
+                    facing = toPlayer.x >= 0f ? 1 : -1;   // 쏘기 전에 플레이어를 향해 돌아선다
                     StartWindup(AttackKind.Shot);
                     velocity.x = 0f;
                 }
@@ -484,7 +502,9 @@ public class Enemy : MonoBehaviour, IDamageable
                 hitFlash.Set(flashColor, flashing ? (flashColor == BlockFlashColor ? BlockFlashAmount : HitFlashAmount) : 0f);
 
             if (flashing && (hitFlash == null || !hitFlash.Supported)) spriteRenderer.color = flashColor;
-            else if (state == State.Windup) spriteRenderer.color = WindupColor;
+            else if (state == State.Windup)
+                spriteRenderer.color = visual.IsPixelArt
+                    ? Color.Lerp(body, WindupColor, PixelArtWindupTint) : WindupColor;
             else if (state == State.Recover) spriteRenderer.color = Color.Lerp(body, RecoverColor, 0.6f);
             else if (IsFrenzied) spriteRenderer.color = Color.Lerp(body, FrenzyColor, 0.65f);
             else if (IsRevengeActive) spriteRenderer.color = Color.Lerp(body, RevengeColor, 0.6f);
@@ -631,6 +651,29 @@ public class Enemy : MonoBehaviour, IDamageable
                 break;
         }
         windupTimer = windupDuration;
+
+        // 예고 시간에 맞춰 휘두르기를 재생 — 동작이 끝나는 순간에 타격이 나간다.
+        // 예고가 끝난 뒤에 재생하면 이미 맞은 뒤에 휘두르는 것처럼 보인다
+        attackCycle++;
+        anim.PlayWindup(AttackMotion(kind), windupDuration);
+    }
+
+    // 공격 종류 → 쓸 공격 그림 번호. 팩마다 동작 구성이 달라 역할별로 직접 정한다.
+    // 없는 번호는 EnemyAnimation 이 아래로 내려가며 찾는다 (보스는 1·2만 있음).
+    int AttackMotion(AttackKind kind)
+    {
+        if (IsBoss)
+        {
+            switch (kind)
+            {
+                case AttackKind.Volley: return 2;   // 마력 파동 — 앞으로 찌르는 동작
+                case AttackKind.Charge: return 3;   // 돌진 (없으면 2로 내려감)
+                default: return 1;                  // 내려찍기
+            }
+        }
+        if (kind == AttackKind.Charge) return 3;
+        if (kind != AttackKind.Melee) return 1;      // 원거리 — 마법사는 attack1 하나뿐
+        return attackCycle % 3 + 1;                  // 근접은 가진 만큼 돌려 쓴다
     }
 
     // 마법구가 나가는 위치: 몸 중심에서 조준 방향으로 살짝 앞
@@ -647,12 +690,14 @@ public class Enemy : MonoBehaviour, IDamageable
             case AttackKind.Shot:
                 state = State.Chase;
                 attackReadyTime = Time.time + AttackCooldown;
+                anim.HoldPose(0.18f);   // 쏜 직후 자세를 잠깐 남긴다
                 FireProjectile(aimDirection, 1f);
                 return;
 
             case AttackKind.Volley:
                 state = State.Chase;
                 attackReadyTime = Time.time + PatternCooldown();
+                anim.HoldPose(0.20f);
                 for (int i = -1; i <= 1; i++) FireProjectile(Rotate(aimDirection, i * bossVolleySpread), bossVolleyDamageMul);
                 return;
 
@@ -661,11 +706,13 @@ public class Enemy : MonoBehaviour, IDamageable
                 chargeTravelled = 0f;
                 chargeHitPlayer = false;
                 knockbackTimer = 0f;
+                // 돌진은 EnemyAnimation 이 돌진이 끝날 때까지 자세를 끌고 간다
                 return;
         }
 
         state = State.Chase;
         attackReadyTime = Time.time + PatternCooldown();
+        anim.HoldPose(0.18f);
 
         SlashEffect.Spawn(transform, AttackRange, facing, 0, AttackEffectColor);
 
@@ -887,13 +934,24 @@ public class Enemy : MonoBehaviour, IDamageable
         velocity.x = Mathf.Clamp(remaining / dt, -platformJumpSpeedX, platformJumpSpeedX);
     }
 
-    // 겹침 방지: 같은 층에 있는 적끼리 최소 간격 (w1+w2)×0.55. 서로 절반씩 밀어냄
+    // 겹침을 풀 때 이 적이 움직이는 정도. 0이면 버티고 상대가 다 비켜난다.
+    // 보스는 졸개들에게 밀리지 않는다
+    float PushMobility => IsBoss ? 0f : 1f;
+
+    // 겹침 방지: 같은 층에 있는 적끼리 최소 간격 (w1+w2)×0.55.
+    // 잘 밀리는 쪽이 그만큼 더 비켜난다
     void SeparateFromOthers()
     {
         Vector2 myHalf = col.bounds.extents;
         foreach (Enemy other in Active)
         {
             if (other == this || other.IsDead) continue;
+            if (other.IsCharging) continue;   // 돌진 중인 적은 겹침 계산에서 빠진다
+            // 원거리 적과 근접 적은 서로 밀지 않고 그냥 겹쳐 지나간다.
+            // 밀게 두면 마법사가 앞으로 떠밀리거나, 반대로 벽이 되어 근접 적들이
+            // 뒤에 막힌다 (둘 다 사용자가 본 문제). 마법사는 아래 PlayerGap 이
+            // 유지 거리를 지켜 주므로 겹쳐도 플레이어 앞으로 나오지 않는다
+            if (IsRanged != other.IsRanged) continue;
 
             Vector2 delta = rb.position - other.rb.position;
             Vector2 otherHalf = other.col.bounds.extents;
@@ -903,16 +961,22 @@ public class Enemy : MonoBehaviour, IDamageable
             float overlap = minDistance - Mathf.Abs(delta.x);
             if (overlap <= 0f) continue;
 
+            float mine = PushMobility, theirs = other.PushMobility;
+            float share = mine + theirs > 0.0001f ? mine / (mine + theirs) : 0.5f;
+            if (share <= 0.0001f) continue;
+
             float dir = Mathf.Abs(delta.x) > 0.0001f ? Mathf.Sign(delta.x)
                 : (GetInstanceID() < other.GetInstanceID() ? -1f : 1f);
             float x = rb.position.x;
-            rb.position = new Vector2(ClampTowardPlayer(x, x + dir * overlap * 0.5f), rb.position.y);
+            rb.position = new Vector2(ClampTowardPlayer(x, x + dir * overlap * share), rb.position.y);
         }
     }
 
     // 플레이어 최소 간격: 적이 스스로(추격·겹침 방지 밀림) 이 거리 안으로는 들어가지 않음.
-    // 근접은 공격이 닿도록 멈추는 거리(사거리 80%), 원거리는 몸 가장자리가 닿는 거리
-    float PlayerGap => IsRanged ? col.bounds.extents.x + playerCollider.bounds.extents.x
+    // 근접은 공격이 닿도록 멈추는 거리(사거리 80%).
+    // 원거리는 **유지하려는 거리**로 잡는다 — 몸이 닿는 거리로 두면 뒤에서 밀렸을 때
+    // 마법사가 플레이어 코앞까지 끌려 나온다
+    float PlayerGap => IsRanged ? rangedKeepMin
                                 : AttackRange * StopDistanceRatio;
 
     // x를 from → to로 옮길 때 플레이어 쪽으로 최소 간격 안까지 파고드는 부분을 잘라냄.
@@ -966,10 +1030,11 @@ public class Enemy : MonoBehaviour, IDamageable
         float dealt = Mathf.Min(damage, CurrentHealth);
         CurrentHealth -= damage;
         flashTimer = FlashTime;        if (damage > 0f) lastDamagedTime = Time.time;
+        if (damage > 0f && !hit.damageOverTime) anim.PlayHurt(FlashTime);
         if (!hit.damageOverTime) SoundManager.Play(flashColor == BlockFlashColor ? SoundId.Block : SoundId.Hit);
 
         // 보스와 돌진 중인 적은 밀리지 않고, 보스는 패턴도 끊기지 않음
-        bool staggerable = !IsBoss && state != State.Charge;
+        bool staggerable = IsStaggerable;
         if (hit.knockback > 0f && staggerable)
         {
             knockbackTimer = KnockbackTime;

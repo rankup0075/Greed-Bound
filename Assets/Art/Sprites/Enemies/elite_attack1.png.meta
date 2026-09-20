@@ -153,7 +153,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -173,9 +173,9 @@ TextureImporter:
       name: elite_attack1_1
       rect:
         serializedVersion: 2
-        x: 158
+        x: 162
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -195,9 +195,9 @@ TextureImporter:
       name: elite_attack1_2
       rect:
         serializedVersion: 2
-        x: 316
+        x: 324
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -209,94 +209,6 @@ TextureImporter:
       bones: []
       spriteID: bc28dd69dc0670310800000000000000
       internalID: 1371171047673266891
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_attack1_3
-      rect:
-        serializedVersion: 2
-        x: 474
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: dfc8a0bc2eb4243f0800000000000000
-      internalID: -918087936589001475
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_attack1_4
-      rect:
-        serializedVersion: 2
-        x: 632
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 931340b7dcf081f20800000000000000
-      internalID: 3393479694430253369
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_attack1_5
-      rect:
-        serializedVersion: 2
-        x: 790
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 26866e2f48cb22560800000000000000
-      internalID: 7287594426235775074
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_attack1_6
-      rect:
-        serializedVersion: 2
-        x: 948
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5b5a5e498c7aea660800000000000000
-      internalID: 7399035717749679541
       vertices: []
       indices: 
       edges: []
@@ -318,10 +230,6 @@ TextureImporter:
       elite_attack1_0: 7171789019377700022
       elite_attack1_1: 640864326049028362
       elite_attack1_2: 1371171047673266891
-      elite_attack1_3: -918087936589001475
-      elite_attack1_4: 3393479694430253369
-      elite_attack1_5: 7287594426235775074
-      elite_attack1_6: 7399035717749679541
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -132,7 +132,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -152,9 +152,9 @@ TextureImporter:
       name: elite_idle_1
       rect:
         serializedVersion: 2
-        x: 158
+        x: 162
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -174,9 +174,9 @@ TextureImporter:
       name: elite_idle_2
       rect:
         serializedVersion: 2
-        x: 316
+        x: 324
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -196,9 +196,9 @@ TextureImporter:
       name: elite_idle_3
       rect:
         serializedVersion: 2
-        x: 474
+        x: 486
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -218,9 +218,9 @@ TextureImporter:
       name: elite_idle_4
       rect:
         serializedVersion: 2
-        x: 632
+        x: 648
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -240,9 +240,9 @@ TextureImporter:
       name: elite_idle_5
       rect:
         serializedVersion: 2
-        x: 790
+        x: 810
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -262,9 +262,9 @@ TextureImporter:
       name: elite_idle_6
       rect:
         serializedVersion: 2
-        x: 948
+        x: 972
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -284,9 +284,9 @@ TextureImporter:
       name: elite_idle_7
       rect:
         serializedVersion: 2
-        x: 1106
+        x: 1134
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -298,50 +298,6 @@ TextureImporter:
       bones: []
       spriteID: 6056ed9a55dce3e80800000000000000
       internalID: -8196888503961885434
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_idle_8
-      rect:
-        serializedVersion: 2
-        x: 1264
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: aa982dff7a57d5e80800000000000000
-      internalID: -8188259183077717590
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_idle_9
-      rect:
-        serializedVersion: 2
-        x: 1422
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3a83bf8aa764de200800000000000000
-      internalID: 210902250191272099
       vertices: []
       indices: 
       edges: []
@@ -368,8 +324,6 @@ TextureImporter:
       elite_idle_5: -5631868841947203850
       elite_idle_6: -8303940254043349659
       elite_idle_7: -8196888503961885434
-      elite_idle_8: -8188259183077717590
-      elite_idle_9: 210902250191272099
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

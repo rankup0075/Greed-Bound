@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 237a48b8258f8204ca5908de438c8069
+guid: b90c3002ab4ee1f4b8d9fcd55df71816
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -17,6 +17,42 @@ TextureImporter:
   - first:
       213: 6845275551763913205
     second: charger_attack3_4
+  - first:
+      213: 1166958507366671110
+    second: charger_attack3_5
+  - first:
+      213: 8879318580694016955
+    second: charger_attack3_6
+  - first:
+      213: 610954723727459749
+    second: charger_attack3_7
+  - first:
+      213: -775660530236221370
+    second: charger_attack3_8
+  - first:
+      213: 6937208726233528773
+    second: charger_attack3_9
+  - first:
+      213: 6686603671778009943
+    second: charger_attack3_10
+  - first:
+      213: -49095862415436915
+    second: charger_attack3_11
+  - first:
+      213: 2423680852511293926
+    second: charger_attack3_12
+  - first:
+      213: -1838378718529518217
+    second: charger_attack3_13
+  - first:
+      213: 8994033687857717041
+    second: charger_attack3_14
+  - first:
+      213: -6721375253343257363
+    second: charger_attack3_15
+  - first:
+      213: -6409216226888059302
+    second: charger_attack3_16
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -117,8 +153,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,10 +173,10 @@ TextureImporter:
       name: charger_attack3_1
       rect:
         serializedVersion: 2
-        x: 136
+        x: 158
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,10 +195,10 @@ TextureImporter:
       name: charger_attack3_2
       rect:
         serializedVersion: 2
-        x: 272
+        x: 316
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,10 +217,10 @@ TextureImporter:
       name: charger_attack3_3
       rect:
         serializedVersion: 2
-        x: 408
+        x: 474
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,10 +239,10 @@ TextureImporter:
       name: charger_attack3_4
       rect:
         serializedVersion: 2
-        x: 544
+        x: 632
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -217,6 +253,50 @@ TextureImporter:
       bones: []
       spriteID: 5f9dd84b8dd4ffe50800000000000000
       internalID: 6845275551763913205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charger_attack3_5
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 0
+        width: 158
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 603e533649ed13010800000000000000
+      internalID: 1166958507366671110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charger_attack3_6
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 0
+        width: 158
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb3eac9543da93b70800000000000000
+      internalID: 8879318580694016955
       vertices: []
       indices: 
       edges: []
@@ -240,6 +320,8 @@ TextureImporter:
       charger_attack3_2: -5378844074023977308
       charger_attack3_3: 8508774219627507262
       charger_attack3_4: 6845275551763913205
+      charger_attack3_5: 1166958507366671110
+      charger_attack3_6: 8879318580694016955
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

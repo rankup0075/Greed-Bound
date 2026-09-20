@@ -111,8 +111,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,10 +131,10 @@ TextureImporter:
       name: mage_hurt_1
       rect:
         serializedVersion: 2
-        x: 240
+        x: 138
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,10 +153,10 @@ TextureImporter:
       name: mage_hurt_2
       rect:
         serializedVersion: 2
-        x: 480
+        x: 276
         y: 0
-        width: 240
-        height: 157
+        width: 138
+        height: 69
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

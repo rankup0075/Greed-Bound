@@ -111,7 +111,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -131,9 +131,9 @@ TextureImporter:
       name: elite_jump_1
       rect:
         serializedVersion: 2
-        x: 158
+        x: 162
         y: 0
-        width: 158
+        width: 162
         height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -145,28 +145,6 @@ TextureImporter:
       bones: []
       spriteID: 2e0b21005bd2c0210800000000000000
       internalID: 1300464647816786146
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: elite_jump_2
-      rect:
-        serializedVersion: 2
-        x: 316
-        y: 0
-        width: 158
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bcbc077d34fcc6300800000000000000
-      internalID: 246799969882786763
       vertices: []
       indices: 
       edges: []
@@ -187,7 +165,6 @@ TextureImporter:
     nameFileIdTable:
       elite_jump_0: -4929844483388291301
       elite_jump_1: 1300464647816786146
-      elite_jump_2: 246799969882786763
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

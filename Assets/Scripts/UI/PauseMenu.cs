@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// ESC 일시정지·설정 화면 + M 음소거 (Spec 9장 "일시정지·설정 — Unity 구현 규칙"). 임시 UI(OnGUI).
+// ESC 일시정지·설정 화면 + M 음소거 (Spec 9장 "일시정지·설정 — Unity 구현 규칙"). 정식 UI.
 // 게임 시작 시 스스로 생겨 씬이 바뀌어도 유지 — 씬·프리팹 수정 불필요. 타이틀 씬에서는 열리지 않음.
 // 열려 있는 동안 Time.timeScale 0, 입력 "Player" 맵을 꺼서 공격·Enter 등 게임 입력이 새지 않게 함.
 // 조작: ↑↓ 항목, ←→ 값 변경, Enter 선택, ESC 뒤로/닫기
@@ -16,8 +16,9 @@ public class PauseMenu : MonoBehaviour
     private InputAction pauseAction, navigateAction, submitAction, muteAction;
     private InputActionMap playerMap;
     private readonly SettingsPanel settings = new SettingsPanel();
-    private readonly ControlsPanel controls = new ControlsPanel();
+    private ControlsPanel controls;
     private bool open;
+    private MenuUi menu;
     private bool inSettings, inControls;
     private int cursor;
     private Vector2 lastNavigate;
@@ -41,6 +42,12 @@ public class PauseMenu : MonoBehaviour
         navigateAction = actions.FindAction("UI/Navigate", throwIfNotFound: true);
         submitAction = actions.FindAction("UI/Submit", throwIfNotFound: true);
         muteAction = actions.FindAction("Player/Mute", throwIfNotFound: true);
+        menu = MenuUi.Create("PauseMenu", 300, transform);   // 타이틀 메뉴(200)보다 위.
+        // 이 오브젝트가 DontDestroyOnLoad 라 캔버스도 자식으로 붙여야 씬이 바뀌어도 남는다
+        menu.SetBackground(new Color(0f, 0f, 0f, 0.88f));  // 게임 화면이 살짝 비치되 글씨를 방해하지 않게
+        menu.SetVisible(false);
+        controls = ControlsPanel.Create(transform, 310);   // 일시정지 메뉴(300) 위
+        controls.SetBackground(new Color(0f, 0f, 0f, 0.88f));
     }
 
     void OnDestroy()
@@ -50,6 +57,12 @@ public class PauseMenu : MonoBehaviour
     }
 
     void Update()
+    {
+        UpdateInput();
+        RefreshMenu();
+    }
+
+    void UpdateInput()
     {
         if (!open)
         {
@@ -160,38 +173,29 @@ public class PauseMenu : MonoBehaviour
         toastUntil = Time.unscaledTime + 1.5f;
     }
 
-    void OnGUI()
+    // 값이 바뀔 때만 밀어 넣는다 (매 프레임 다시 그리지 않음)
+    void RefreshMenu()
     {
-        GUI.depth = -1000;  // 다른 임시 UI 위에
-        float width = MenuGui.Begin(out Matrix4x4 previous);
+        if (menu == null) return;
+        bool show = open && !inControls;
+        menu.SetVisible(show);
+        if (controls != null) controls.SetVisible(open && inControls);
+        if (!show) return;
 
-        if (open)
+        if (inSettings)
         {
-            MenuGui.Fill(width, 1080f, new Color(0f, 0f, 0f, 0.7f));
-            if (inControls) controls.Draw(width);
-            else if (inSettings) DrawSettings(width);
-            else DrawMain(width);
+            menu.SetTitle("설정");
+            menu.SetItems(settings.Items(), settings.Cursor, 110f);
+            menu.SetHint("↑↓ 선택   ←→ 변경   Enter 확인   ESC 돌아가기 (화면 설정은 취소)");
+            menu.SetRecord("");
         }
-
-        if (toast != null && Time.unscaledTime < toastUntil)
-            GUI.Label(new Rect(0, 960f, width, 60f), toast, MenuGui.HintStyle);
-
-        MenuGui.End(previous);
-    }
-
-    void DrawMain(float width)
-    {
-        GUI.Label(new Rect(0, 300f, width, 90f), "일시정지", MenuGui.TitleStyle);
-        for (int i = 0; i < MainItems.Length; i++) MenuGui.DrawItem(width, 440f + i * 70f, i == cursor, MainItems[i]);
-        GUI.Label(new Rect(0, 760f, width, 40f), "↑↓ 선택   Enter 확인   ESC 닫기", MenuGui.HintStyle);
-        if (cursor == 3) GUI.Label(new Rect(0, 800f, width, 40f), "진행 중인 런은 저장되지 않습니다", MenuGui.HintStyle);
-    }
-
-    void DrawSettings(float width)
-    {
-        GUI.Label(new Rect(0, 200f, width, 90f), "설정", MenuGui.TitleStyle);
-        string[] items = settings.Items();
-        for (int i = 0; i < items.Length; i++) MenuGui.DrawItem(width, 330f + i * 64f, i == settings.Cursor, items[i]);
-        GUI.Label(new Rect(0, 810f, width, 40f), "↑↓ 선택   ←→ 변경   Enter 확인   ESC 돌아가기 (화면 설정은 취소)", MenuGui.HintStyle);
+        else
+        {
+            menu.SetTitle("일시정지");
+            menu.SetItems(MainItems, cursor, 147f);
+            menu.SetHint("↑↓ 선택   Enter 확인   ESC 닫기");
+            menu.SetRecord(cursor == 3 ? "진행 중인 런은 저장되지 않습니다" : "");
+        }
+        menu.SetMessage(toast != null && Time.unscaledTime < toastUntil ? toast : "");
     }
 }

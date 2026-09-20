@@ -132,8 +132,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,10 +152,10 @@ TextureImporter:
       name: charger_idle_1
       rect:
         serializedVersion: 2
-        x: 136
+        x: 158
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,10 +174,10 @@ TextureImporter:
       name: charger_idle_2
       rect:
         serializedVersion: 2
-        x: 272
+        x: 316
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -196,10 +196,10 @@ TextureImporter:
       name: charger_idle_3
       rect:
         serializedVersion: 2
-        x: 408
+        x: 474
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -218,10 +218,10 @@ TextureImporter:
       name: charger_idle_4
       rect:
         serializedVersion: 2
-        x: 544
+        x: 632
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -240,10 +240,10 @@ TextureImporter:
       name: charger_idle_5
       rect:
         serializedVersion: 2
-        x: 680
+        x: 790
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -262,20 +262,20 @@ TextureImporter:
       name: charger_idle_6
       rect:
         serializedVersion: 2
-        x: 816
+        x: 948
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 08605c6d17a78d4e0800000000000000
-      internalID: -1956679408739350912
+      spriteID: ef77e0bd9cdeee840835f480085612fc
+      internalID: -2133140985
       vertices: []
       indices: 
       edges: []
@@ -284,20 +284,20 @@ TextureImporter:
       name: charger_idle_7
       rect:
         serializedVersion: 2
-        x: 952
+        x: 1106
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 4887c8c0a5cbfaaf0800000000000000
-      internalID: -382880348359591804
+      spriteID: a0bcfe822859cde428cfec8cc693f9c1
+      internalID: -1652139530
       vertices: []
       indices: 
       edges: []
@@ -306,20 +306,20 @@ TextureImporter:
       name: charger_idle_8
       rect:
         serializedVersion: 2
-        x: 1088
+        x: 1264
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: a6f97868eb168a230800000000000000
-      internalID: 3650274968912502634
+      spriteID: 507651373c7d7554ba26576132f5bacb
+      internalID: -637546658
       vertices: []
       indices: 
       edges: []
@@ -328,20 +328,20 @@ TextureImporter:
       name: charger_idle_9
       rect:
         serializedVersion: 2
-        x: 1224
+        x: 1422
         y: 0
-        width: 136
-        height: 75
+        width: 158
+        height: 106
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d49387f50e2b9cf20800000000000000
-      internalID: 3443480066845587789
+      spriteID: 1b284720e86d71d4387133666d4f8f5d
+      internalID: 1435332498
       vertices: []
       indices: 
       edges: []
@@ -366,10 +366,10 @@ TextureImporter:
       charger_idle_3: -4208336967843216669
       charger_idle_4: -3834495221886576529
       charger_idle_5: 2172758718306471802
-      charger_idle_6: -1956679408739350912
-      charger_idle_7: -382880348359591804
-      charger_idle_8: 3650274968912502634
-      charger_idle_9: 3443480066845587789
+      charger_idle_6: -2133140985
+      charger_idle_7: -1652139530
+      charger_idle_8: -637546658
+      charger_idle_9: 1435332498
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

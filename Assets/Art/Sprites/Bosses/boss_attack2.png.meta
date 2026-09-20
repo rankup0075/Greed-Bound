@@ -117,8 +117,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,10 +137,10 @@ TextureImporter:
       name: boss_attack2_1
       rect:
         serializedVersion: 2
-        x: 116
+        x: 154
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,10 +159,10 @@ TextureImporter:
       name: boss_attack2_2
       rect:
         serializedVersion: 2
-        x: 232
+        x: 308
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,42 +181,20 @@ TextureImporter:
       name: boss_attack2_3
       rect:
         serializedVersion: 2
-        x: 348
+        x: 462
         y: 0
-        width: 116
-        height: 106
+        width: 154
+        height: 113
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3f7490a44a15aac20800000000000000
-      internalID: 3218474649768249331
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: boss_attack2_4
-      rect:
-        serializedVersion: 2
-        x: 464
-        y: 0
-        width: 116
-        height: 106
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a386d2f3bacc823d0800000000000000
-      internalID: -3231107696766916550
+      spriteID: 679fb6b3194631148982df02674daa78
+      internalID: -1191577463
       vertices: []
       indices: 
       edges: []
@@ -238,8 +216,7 @@ TextureImporter:
       boss_attack2_0: 1603242395166090389
       boss_attack2_1: -4605541614795031417
       boss_attack2_2: 6248765037087555095
-      boss_attack2_3: 3218474649768249331
-      boss_attack2_4: -3231107696766916550
+      boss_attack2_3: -1191577463
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

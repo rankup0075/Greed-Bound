@@ -231,7 +231,8 @@ public class RoundManager : MonoBehaviour
         BattleStarted?.Invoke();
     }
 
-    public bool IsBossRound => bossInterval > 0 && run != null && run.round % bossInterval == 0;
+    // round > 0 조건이 없으면 **시작 라운드를 0으로 두고 시험할 때 0 % 5 == 0 이라 보스가 나온다**
+    public bool IsBossRound => bossInterval > 0 && run != null && run.round > 0 && run.round % bossInterval == 0;
 
     void SpawnMany(EnemyType type, int count)
     {

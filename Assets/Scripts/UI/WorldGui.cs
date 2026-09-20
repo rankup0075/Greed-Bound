@@ -36,6 +36,50 @@ public static class WorldGui
         filter.mesh.colors = new[] { color, color, color, color };
     }
 
+    // 아래 가운데를 기준으로 한 스프라이트 (소품·NPC).
+    // size 를 주면 그 크기로 **이어 붙인다**(벽·단처럼 길게 늘려야 하는 것).
+    // 안 주면 그림 원래 크기 그대로 — 도트는 늘리면 픽셀이 뭉개지므로 이쪽이 기본이다.
+    public static SpriteRenderer CreateSprite(string name, Vector2 bottomCenter, Sprite sprite,
+                                              int sortingOrder, Vector2 size = default,
+                                              string animator = null)
+    {
+        GameObject go = new GameObject(name);
+        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
+        renderer.sprite = sprite;
+        renderer.sortingOrder = sortingOrder;
+
+        bool stretched = size.x > 0f && size.y > 0f;
+        if (stretched)
+        {
+            renderer.drawMode = SpriteDrawMode.Tiled;
+            renderer.tileMode = SpriteTileMode.Continuous;
+            renderer.size = size;
+        }
+
+        // 그림이 그려지는 칸은 **기준점(pivot)** 을 중심으로 잡힌다. 임포트 규칙이 소품은
+        // 아래 가운데, 배경은 가운데로 잡으므로 어느 쪽이든 맞게 기준점 비율로 계산한다
+        float pivotFraction = 0f;
+        if (sprite != null && sprite.rect.height > 0f) pivotFraction = sprite.pivot.y / sprite.rect.height;
+        float height = stretched ? size.y : (sprite != null ? sprite.bounds.size.y : 0f);
+        go.transform.position = new Vector3(bottomCenter.x, bottomCenter.y + pivotFraction * height, 0f);
+
+        // 움직이는 소품·NPC — 컨트롤러가 있으면 붙인다 (에디터 메뉴 "NPC 애니메이터 생성"이 만듦).
+        // 없으면 첫 칸이 그대로 서 있으므로 게임은 그대로 돌아간다
+        if (animator != null)
+        {
+            RuntimeAnimatorController controller =
+                Resources.Load<RuntimeAnimatorController>("NpcAnimators/" + animator);
+            if (controller != null)
+            {
+                Animator component = go.AddComponent<Animator>();
+                component.runtimeAnimatorController = controller;
+                component.applyRootMotion = false;
+                component.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            }
+        }
+        return renderer;
+    }
+
     // OnGUI 시작 시 호출: 화면 높이 720 기준 행렬을 걸고 그 기준의 화면 폭을 돌려줌
     public static float BeginVirtual(out float scale)
     {

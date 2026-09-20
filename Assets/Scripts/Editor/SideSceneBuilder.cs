@@ -79,6 +79,9 @@ public static class SideSceneBuilder
         return context;
     }
 
+    // 성 내부 발판 그림 한 칸 높이 (hall_platform.png 22px ÷ PPU 36)
+    const float HallPlatformArtHeight = 22f / 36f;
+
     // 3단계: 지면·벽·발판, 카메라 경계, 플레이어 위치
     public static void BuildTerrain(Context context, string rootName, float halfWidth, ArenaLayout.PlatformSpec[] platforms, float playerStartX)
     {
@@ -86,19 +89,25 @@ public static class SideSceneBuilder
         GameObject root = new GameObject(rootName);
         if (square != null)
         {
-            GameObject ground = BattleArenaBuilder.CreateBlock(root.transform, "Ground", square, BattleArenaBuilder.GroundColor,
-                new Vector2(0f, ArenaLayout.GroundTop - 1f), new Vector2(halfWidth * 2f + 4f, 2f));
-            ground.AddComponent<BoxCollider2D>();
-            ground.GetComponent<SpriteRenderer>().sortingOrder = -10;
+            // 전투 맵과 같은 구조(루트 = 판정, 자식 Art = 그림)지만 그림은 성 내부 세트를 쓴다
+            BattleArenaBuilder.CreateBackground(root.transform, halfWidth, BattleArenaBuilder.HallBackgroundLayers);
+
+            Vector2 groundSize = new Vector2(halfWidth * 2f + 4f, 2f);
+            GameObject ground = BattleArenaBuilder.CreateTerrain(root.transform, "Ground", square,
+                BattleArenaBuilder.GroundColor, "hall_ground",
+                new Vector2(0f, ArenaLayout.GroundTop - 1f), groundSize, groundSize, -10);
+            ground.AddComponent<BoxCollider2D>().size = groundSize;
 
             for (int i = 0; i < platforms.Length; i++)
             {
                 ArenaLayout.PlatformSpec spec = platforms[i];
-                GameObject platform = BattleArenaBuilder.CreateBlock(root.transform, $"Platform_{i + 1}", square, BattleArenaBuilder.PlatformColor,
-                    new Vector2(spec.x, spec.top - ArenaLayout.PlatformThickness * 0.5f),
-                    new Vector2(spec.width, ArenaLayout.PlatformThickness));
+                Vector2 hit = new Vector2(spec.width, ArenaLayout.PlatformThickness);
+                Vector2 art = new Vector2(spec.width, HallPlatformArtHeight);
+                GameObject platform = BattleArenaBuilder.CreateTerrain(root.transform, $"Platform_{i + 1}", square,
+                    BattleArenaBuilder.PlatformColor, "hall_platform",
+                    new Vector2(spec.x, spec.top - ArenaLayout.PlatformThickness * 0.5f), hit, art, -5);
                 platform.AddComponent<OneWayPlatform>();
-                platform.GetComponent<SpriteRenderer>().sortingOrder = -5;
+                if (platform.TryGetComponent(out BoxCollider2D platformBox)) platformBox.size = hit;
             }
         }
         else

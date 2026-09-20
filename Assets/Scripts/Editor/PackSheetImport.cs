@@ -29,12 +29,14 @@ public static class PackSheetImport
     [System.Serializable]
     class Manifest { public Sheet[] sheets; }
 
-    // 접두사로 폴더를 가른다. 목록에 없으면 적으로 본다.
-    static string CategoryOf(string name)
+    // 접두사로 들어갈 곳을 가른다. 목록에 없으면 적으로 본다.
+    // NPC 는 실행 중에 Resources.Load 로 읽으므로 Resources 아래에 둔다.
+    static (string sprites, string clips) TargetOf(string name)
     {
-        if (name.StartsWith("player_")) return "Player";
-        if (name.StartsWith("boss_")) return "Bosses";
-        return "Enemies";
+        if (name.StartsWith("npc_")) return ("Assets/Resources/Props", "Assets/Resources/NpcAnimators");
+        if (name.StartsWith("player_")) return ("Assets/Art/Sprites/Player", "Assets/Art/Animations/Player");
+        if (name.StartsWith("boss_")) return ("Assets/Art/Sprites/Bosses", "Assets/Art/Animations/Bosses");
+        return ("Assets/Art/Sprites/Enemies", "Assets/Art/Animations/Enemies");
     }
 
     [MenuItem("Greed Bound/에셋 팩 시트 임포트")]
@@ -66,9 +68,7 @@ public static class PackSheetImport
             string src = Path.Combine(srcDir, sheet.name + ".png");
             if (!File.Exists(src)) { skipped.Add(sheet.name + " (원본 없음)"); continue; }
 
-            string category = CategoryOf(sheet.name);
-            string spriteDir = $"Assets/Art/Sprites/{category}";
-            string clipDir = $"Assets/Art/Animations/{category}";
+            (string spriteDir, string clipDir) = TargetOf(sheet.name);
             Directory.CreateDirectory(spriteDir);
             Directory.CreateDirectory(clipDir);
 
@@ -80,9 +80,11 @@ public static class PackSheetImport
             AiSourceBatchImport.CreateClip(spritePath, $"{clipDir}/{sheet.name}.anim",
                                            sheet.frames, sheet.fps, sheet.loop);
 
-            if (category == "Player") touchedPlayer = true;
+            if (sheet.name.StartsWith("player_")) touchedPlayer = true;
             done.Add($"{sheet.name} ({sheet.frames}프레임, {sheet.cellWidth}x{sheet.cellHeight}, {sheet.fps}fps)");
         }
+
+        List<string> removed = RemoveStale(manifest);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -96,6 +98,49 @@ public static class PackSheetImport
         }
 
         Debug.Log($"에셋 팩 시트 임포트 완료 — {done.Count}개\n" + string.Join("\n", done) +
-                  (skipped.Count > 0 ? "\n\n건너뜀:\n" + string.Join("\n", skipped) : ""));
+                  (skipped.Count > 0 ? "\n\n건너뜀:\n" + string.Join("\n", skipped) : "") +
+                  (removed.Count > 0 ? "\n\n지운 옛 파일: " + string.Join(", ", removed) : ""));
+    }
+
+    // 목록에서 빠진 옛 스프라이트·클립을 지운다.
+    // 남겨 두면 애니메이터가 그걸 상태로 집어넣어, 이를테면 병사가 쓰지 않기로 한
+    // 창·레이피어 공격을 계속 꺼내 쓴다. 같은 접두사를 쓰는 것만 건드린다.
+    static List<string> RemoveStale(Manifest manifest)
+    {
+        HashSet<string> keep = new HashSet<string>();
+        HashSet<string> prefixes = new HashSet<string>();
+        foreach (Sheet sheet in manifest.sheets)
+        {
+            keep.Add(sheet.name);
+            int cut = sheet.name.IndexOf('_');
+            if (cut > 0) prefixes.Add(sheet.name.Substring(0, cut + 1));
+        }
+
+        List<string> removed = new List<string>();
+        string[] folders =
+        {
+            "Assets/Art/Sprites/Player", "Assets/Art/Sprites/Enemies", "Assets/Art/Sprites/Bosses",
+            "Assets/Art/Animations/Player", "Assets/Art/Animations/Enemies", "Assets/Art/Animations/Bosses",
+            "Assets/Resources/Props", "Assets/Resources/NpcAnimators",
+        };
+        foreach (string folder in folders)
+        {
+            if (!AssetDatabase.IsValidFolder(folder)) continue;
+            foreach (string guid in AssetDatabase.FindAssets("", new[] { folder }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (!path.EndsWith(".png") && !path.EndsWith(".anim")) continue;
+
+                string name = Path.GetFileNameWithoutExtension(path);
+                if (keep.Contains(name)) continue;
+
+                bool mine = false;
+                foreach (string prefix in prefixes) if (name.StartsWith(prefix)) { mine = true; break; }
+                if (!mine) continue;
+
+                if (AssetDatabase.DeleteAsset(path)) removed.Add(name);
+            }
+        }
+        return removed;
     }
 }
